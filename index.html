@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
 <title>AI Fluency Craft Tree - Three books, no cross-book lines</title>
 <style>
   :root {
@@ -10,17 +11,43 @@
     --c1: #2dd4bf; --c1-fill: #10231f;
     --c2: #60a5fa; --c2-fill: #0f1e2f;
     --c3: #a78bfa; --c3-fill: #1a1730;
+    --page-gradient: radial-gradient(ellipse at 50% 15%, var(--panel) 0%, var(--bg) 70%);
   }
+  html[data-theme="light"] {
+    --bg: #eef0f3; --panel: #ffffff; --line: #c3b89a; --line-bright: #a9761e;
+    --carry: #a04b26; --text: #1c1e24; --text-dim: #5b5f68;
+    --c1: #0f9488; --c1-fill: #e2f7f4;
+    --c2: #2f6fe4; --c2-fill: #e8f0fe;
+    --c3: #7c4fe0; --c3-fill: #f1ecfd;
+  }
+  @media (prefers-color-scheme: light) {
+    html:not([data-theme="dark"]) {
+      --bg: #eef0f3; --panel: #ffffff; --line: #c3b89a; --line-bright: #a9761e;
+      --carry: #a04b26; --text: #1c1e24; --text-dim: #5b5f68;
+      --c1: #0f9488; --c1-fill: #e2f7f4;
+      --c2: #2f6fe4; --c2-fill: #e8f0fe;
+      --c3: #7c4fe0; --c3-fill: #f1ecfd;
+    }
+  }
+  .theme-toggle {
+    position: fixed; top: 14px; right: 16px; z-index: 2000;
+    background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+    font-family: inherit;
+  }
+  .theme-toggle:hover { border-color: var(--line-bright); }
   * { box-sizing: border-box; }
-  body { margin: 0; background: radial-gradient(ellipse at 50% 20%, #16151f 0%, #0a0b10 70%); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  header { padding: 24px 32px 16px; border-bottom: 1px solid #2a2a30; }
+  body { margin: 0; background: var(--page-gradient); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background 0.15s, color 0.15s; }
+  header { padding: 24px 32px 16px; border-bottom: 1px solid var(--line); }
   h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; }
   .sub { color: var(--text-dim); font-size: 13px; margin: 0 0 8px; }
   .note { color: var(--text-dim); font-size: 12px; margin: 0; font-style: italic; }
-  .legend { display: flex; gap: 20px; padding: 12px 32px; font-size: 12px; color: var(--text-dim); border-bottom: 1px solid #2a2a30; align-items: center; flex-wrap: wrap; }
+  .legend { display: flex; gap: 20px; padding: 12px 32px; font-size: 12px; color: var(--text-dim); border-bottom: 1px solid var(--line); align-items: center; flex-wrap: wrap; }
   .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
   .dot.star { width: 18px; height: 18px; border: 2px solid var(--line-bright); background: transparent; }
   .swatch { width: 24px; height: 2px; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  .nav-link { margin-left: auto; color: var(--line-bright); text-decoration: none; font-weight: 500; border: 1px solid var(--line-bright); border-radius: 5px; padding: 4px 10px; white-space: nowrap; }
+  .nav-link:hover { background: var(--line-bright); color: var(--bg); }
   .canvas-wrap { overflow: auto; max-height: 88vh; padding: 24px 0; display: flex; justify-content: center; }
   svg { display: block; }
   .node-circle { cursor: pointer; transition: filter 0.15s; }
@@ -31,7 +58,7 @@
   .edge { stroke: var(--line); fill: none; transition: stroke 0.2s, stroke-width 0.2s; }
   .edge.carry { stroke: var(--carry); stroke-dasharray: 5 5; }
   .edge.lit { stroke: var(--line-bright); stroke-dasharray: none; }
-  .desc-panel { position: sticky; bottom: 0; background: var(--panel); border-top: 1px solid #2a2a30; padding: 16px 32px; min-height: 64px; }
+  .desc-panel { position: sticky; bottom: 0; background: var(--panel); border-top: 1px solid var(--line); padding: 16px 32px; min-height: 64px; }
   .desc-panel .name { font-size: 15px; font-weight: 500; margin: 0 0 4px; }
   .desc-panel .body { font-size: 13px; color: var(--text-dim); margin: 0; max-width: 640px; line-height: 1.5; }
   .placeholder { color: var(--text-dim); font-size: 13px; font-style: italic; }
@@ -67,6 +94,7 @@
   <span><span class="dot star"></span>Star - convergence point</span>
   <span><span class="swatch" style="background:var(--carry)"></span>Same-book long carry</span>
   <span><svg width="12" height="12"><circle cx="6" cy="6" r="4" fill="var(--line-bright)"/></svg> Cross-book edge exists, not drawn</span>
+  <a href="reference.html" class="nav-link">Icon reference →</a>
 </div>
 
 <div class="canvas-wrap">
@@ -372,6 +400,28 @@ raw.forEach(n => {
 document.body.addEventListener("click", () => { pinnedId = null; tooltip.style.opacity = 0; });
 
 document.querySelector(".canvas-wrap").scrollTop = maxY;
+</script>
+
+
+<script>
+(function() {
+  var mq = window.matchMedia('(prefers-color-scheme: light)');
+  function current() {
+    return document.documentElement.getAttribute('data-theme') || (mq.matches ? 'light' : 'dark');
+  }
+  function setLabel(btn) { btn.textContent = current() === 'light' ? 'Dark mode' : 'Light mode'; }
+  window.addEventListener('DOMContentLoaded', function() {
+    var btn = document.createElement('button');
+    btn.className = 'theme-toggle';
+    setLabel(btn);
+    btn.addEventListener('click', function() {
+      var next = current() === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      setLabel(btn);
+    });
+    document.body.appendChild(btn);
+  });
+})();
 </script>
 
 </body>
