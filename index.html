@@ -22,7 +22,7 @@
   .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
   .dot.star { width: 18px; height: 18px; border: 2px solid var(--line-bright); background: transparent; }
   .swatch { width: 24px; height: 2px; display: inline-block; margin-right: 6px; vertical-align: middle; }
-  .canvas-wrap { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 16px 0; display: flex; justify-content: center; }
+  .canvas-wrap { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 16px 0; display: flex; justify-content: center; align-items: center; }
   svg { display: block; }
   .node-circle { cursor: pointer; transition: filter 0.15s; }
   .node-circle:hover { filter: brightness(1.4); }
@@ -232,11 +232,14 @@ svg.setAttribute("viewBox", `${minX} 0 ${svgW} ${maxY}`);
 
 const canvasWrap = document.querySelector(".canvas-wrap");
 function sizeSvg() {
-  // Use all available width in the canvas area (no arbitrary cap), scale height to match aspect ratio.
-  const available = canvasWrap.clientWidth || window.innerWidth;
-  const renderW = Math.max(available - 4, svgW * 0.35); // never shrink below a readable minimum
+  // Fit the whole tree inside the available area - no scrolling needed.
+  const availW = canvasWrap.clientWidth || window.innerWidth;
+  const availH = canvasWrap.clientHeight || window.innerHeight;
+  const scale = Math.min(availW / svgW, availH / maxY);
+  const renderW = svgW * scale;
+  const renderH = maxY * scale;
   svg.setAttribute("width", renderW);
-  svg.setAttribute("height", maxY * (renderW / svgW));
+  svg.setAttribute("height", renderH);
 }
 sizeSvg();
 window.addEventListener("resize", sizeSvg);
@@ -334,7 +337,6 @@ raw.forEach(n => {
 
 document.body.addEventListener("click", () => { pinnedId = null; tooltip.style.opacity = 0; });
 
-document.querySelector(".canvas-wrap").scrollTop = maxY;
 </script>
 
 </body>
