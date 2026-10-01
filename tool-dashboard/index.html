@@ -135,7 +135,9 @@ tr:last-child td{border-bottom:0}
 .cmp-table th:first-child, .cmp-table td:first-child{position:sticky; left:0; background:var(--surface); z-index:1; min-width:130px; font-weight:600;}
 .cmp-table thead th:first-child{background:var(--mute);}
 .cmp-table td{min-width:230px; max-width:340px;}
-.cmp-table ul li{padding:2px 0;}
+.cmp-table .list li{padding:5px 0; border-bottom:1px solid var(--mute);}
+.cmp-table .list li::before{content:none; display:none;}
+.cmp-table .list li:last-child{border-bottom:0;}
 .cmp-table .x{border:0; background:transparent; color:var(--ink2); font-size:12px; text-decoration:underline; padding:0; margin-left:6px;}
 .nm-h{font-family:var(--serif); font-size:20px; font-weight:500;}
 
