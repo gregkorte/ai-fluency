@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI tool decision board - NSS AI Fluency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF3F1; --surface:#FFFFFF; --ink:#14232A; --ink2:#4B5C63; --line:#D3DDD9; --mute:#E3EAE7;
+  --accent:#0E6B63; --accentSoft:#D8ECE8;
+  --info:#2F5D9E; --infoSoft:#DDE7F5;
+  --warn:#8A5200; --warnSoft:#F7EAD1;
+  --risk:#9C3426; --riskSoft:#F5DDD8;
+  --serif:"Newsreader", Georgia, "Times New Roman", serif;
+  --sans:"Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E181C; --surface:#152329; --ink:#E5EEEB; --ink2:#9DB0B4; --line:#27393F; --mute:#1D2F35;
+    --accent:#56C5B8; --accentSoft:#133632;
+    --info:#8DB4EC; --infoSoft:#1B2C45;
+    --warn:#E3B15C; --warnSoft:#3A2C12;
+    --risk:#EE9A8C; --riskSoft:#3F1E19;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E181C; --surface:#152329; --ink:#E5EEEB; --ink2:#9DB0B4; --line:#27393F; --mute:#1D2F35;
+  --accent:#56C5B8; --accentSoft:#133632;
+  --info:#8DB4EC; --infoSoft:#1B2C45;
+  --warn:#E3B15C; --warnSoft:#3A2C12;
+  --risk:#EE9A8C; --riskSoft:#3F1E19;
+}
+html{height:100%; scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0; min-height:100%; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-text-size-adjust:100%;}
+button{font:inherit; color:inherit; cursor:pointer;}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px;}
+h1,h2,h3,h4{margin:0; font-family:var(--serif); font-weight:500; letter-spacing:-0.01em;}
+p{margin:0}
+ul{margin:0; padding:0; list-style:none}
+
+.wrap{max-width:1280px; margin:0 auto; padding:0 20px 48px;}
+.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 24px; padding:22px 0 14px; border-bottom:1px solid var(--line);}
+.top h1{font-size:28px; line-height:1.1;}
+.top .sub{color:var(--ink2); font-size:13.5px; margin-top:4px;}
+.tabs{display:flex; gap:4px; flex-wrap:wrap;}
+.tab{background:transparent; border:1px solid transparent; padding:8px 14px; border-radius:999px; font-weight:500; color:var(--ink2);}
+.tab[aria-selected="true"]{background:var(--ink); color:var(--paper);}
+.tab:hover:not([aria-selected="true"]){border-color:var(--line); color:var(--ink);}
+
+.split{display:grid; grid-template-columns:320px minmax(0,1fr); gap:28px; margin-top:22px; align-items:start;}
+.rail{position:sticky; top:12px; max-height:calc(100vh - 24px); overflow:auto; padding-right:4px;}
+.filters{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+.chip{border:1px solid var(--line); background:var(--surface); padding:5px 11px; border-radius:999px; font-size:13px;}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff;}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#06201d;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#06201d;}}
+.group-title{font-family:var(--serif); font-size:15px; color:var(--ink2); margin:16px 0 6px; font-weight:500;}
+.row{display:flex; align-items:stretch; border:1px solid var(--line); background:var(--surface); border-radius:10px; margin-bottom:6px; overflow:hidden;}
+.row.is-primary{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
+.row .pick{flex:1; text-align:left; background:transparent; border:0; padding:9px 12px; min-width:0;}
+.row .nm{font-weight:600; display:block;}
+.row .meta{display:flex; gap:8px; align-items:center; color:var(--ink2); font-size:12.5px; margin-top:2px;}
+.dot{width:8px; height:8px; border-radius:50%; display:inline-block; flex:none;}
+.dot.t1{background:var(--accent)} .dot.t2{background:var(--info)} .dot.t3{background:var(--warn)} .dot.t4{background:var(--ink2)} .dot.tw{background:transparent; border:1.5px dashed var(--ink2)}
+.row .cmp{border:0; border-left:1px solid var(--line); background:var(--mute); width:44px; font-size:12px; color:var(--ink2);}
+.row .cmp[aria-pressed="true"]{background:var(--info); color:#fff;}
+:root[data-theme="dark"] .row .cmp[aria-pressed="true"]{color:#08121f;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .row .cmp[aria-pressed="true"]{color:#08121f;}}
+.row .cmp:disabled{opacity:.4; cursor:not-allowed;}
+.legend{margin-top:18px; font-size:12.5px; color:var(--ink2); display:grid; gap:4px;}
+.legend span{display:flex; gap:8px; align-items:center;}
+
+.pane{min-width:0;}
+.pane-head h2{font-size:36px; line-height:1.05;}
+.pane-head .lead{color:var(--ink2); margin-top:6px;}
+.pane-head .pitch{font-size:18px; margin-top:12px; max-width:62ch;}
+.tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
+.tag{font-size:12.5px; padding:3px 10px; border-radius:999px; border:1px solid var(--line); background:var(--surface);}
+.tag.t1{background:var(--accentSoft); border-color:transparent; color:var(--accent);}
+.tag.t2{background:var(--infoSoft); border-color:transparent; color:var(--info);}
+.tag.t3{background:var(--warnSoft); border-color:transparent; color:var(--warn);}
+.tag.t4{background:var(--mute); border-color:transparent; color:var(--ink2);}
+.tag.tw{border-style:dashed; color:var(--ink2);}
+
+.sec{margin-top:30px; padding-top:18px; border-top:1px solid var(--line);}
+.sec h3{font-size:21px; margin-bottom:10px;}
+.sec .hint{color:var(--ink2); font-size:13.5px; margin:-4px 0 12px;}
+.two{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px;}
+.list li{padding:6px 0 6px 16px; position:relative; border-bottom:1px solid var(--mute);}
+.list li:last-child{border-bottom:0}
+.list li::before{content:""; position:absolute; left:2px; top:14px; width:6px; height:6px; border-radius:50%; background:var(--ink2);}
+.list.good li::before{background:var(--accent)}
+.list.bad li::before{background:var(--risk)}
+.sub-h{font-weight:600; margin-bottom:4px;}
+
+.ladder{display:flex; gap:0; overflow-x:auto; padding-bottom:6px; border-top:2px solid var(--line);}
+.step{flex:1 0 170px; padding:12px 14px 6px 0; position:relative;}
+.step::before{content:""; position:absolute; top:-7px; left:0; width:12px; height:12px; border-radius:50%; background:var(--paper); border:2px solid var(--ink2);}
+.step.entry{border-top:2px solid var(--accent); margin-top:-2px;}
+.step.entry::before{background:var(--accent); border-color:var(--accent);}
+.step .price{font-family:var(--serif); font-size:28px; line-height:1.1; padding-left:20px;}
+.step .pn{font-weight:600; padding-left:20px; margin-top:2px;}
+.step .pd{color:var(--ink2); font-size:13.5px; padding-left:20px; margin-top:2px;}
+.step .badge{display:inline-block; margin-left:20px; margin-top:6px; font-size:12px; color:var(--accent); font-weight:600;}
+
+table{border-collapse:collapse; width:100%;}
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--surface);}
+th,td{text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid var(--mute); font-size:14px;}
+th{font-weight:600; background:var(--mute); white-space:nowrap;}
+tr:last-child td{border-bottom:0}
+.conf{display:inline-block; font-size:12px; padding:1px 8px; border-radius:999px; border:1px solid var(--line); white-space:nowrap;}
+.conf-high{background:var(--accentSoft); color:var(--accent); border-color:transparent;}
+.conf-med{background:var(--infoSoft); color:var(--info); border-color:transparent;}
+.conf-low{background:var(--warnSoft); color:var(--warn); border-color:transparent;}
+.conf-none{border-style:dashed; color:var(--ink2);}
+.rate{display:inline-block; font-weight:600; padding:3px 12px; border-radius:999px;}
+.rate-near{background:var(--accentSoft); color:var(--accent);}
+.rate-likely{background:var(--infoSoft); color:var(--info);}
+.rate-unc{background:var(--warnSoft); color:var(--warn);}
+.rate-unp{background:var(--riskSoft); color:var(--risk);}
+.note{background:var(--warnSoft); color:var(--ink); border-left:3px solid var(--warn); padding:10px 14px; border-radius:6px; margin-top:12px; font-size:14px;}
+.note.info{background:var(--infoSoft); border-left-color:var(--info);}
+
+.cmp-bar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px;}
+.btn{border:1px solid var(--line); background:var(--surface); padding:7px 14px; border-radius:8px; font-weight:500;}
+.btn:hover{border-color:var(--ink2)}
+.cmp-table th:first-child, .cmp-table td:first-child{position:sticky; left:0; background:var(--surface); z-index:1; min-width:130px; font-weight:600;}
+.cmp-table thead th:first-child{background:var(--mute);}
+.cmp-table td{min-width:230px; max-width:340px;}
+.cmp-table ul li{padding:2px 0;}
+.cmp-table .x{border:0; background:transparent; color:var(--ink2); font-size:12px; text-decoration:underline; padding:0; margin-left:6px;}
+.nm-h{font-family:var(--serif); font-size:20px; font-weight:500;}
+
+.bars{display:grid; gap:12px;}
+.bar-row{display:grid; grid-template-columns:150px minmax(0,1fr) 190px; gap:14px; align-items:center;}
+.bar-track{height:22px; background:var(--mute); border-radius:6px; position:relative; overflow:hidden;}
+.bar-max{position:absolute; inset:0 auto 0 0; background:var(--accent); opacity:.28;}
+.bar-fill{position:absolute; inset:0 auto 0 0; background:var(--accent);}
+.bar-fill.med{background:repeating-linear-gradient(135deg,var(--accent) 0 6px,transparent 6px 9px);}
+.bar-fill.low{background:repeating-linear-gradient(135deg,var(--accent) 0 3px,transparent 3px 8px);}
+.bar-label{font-size:13.5px;}
+.bar-label small{display:block; color:var(--ink2);}
+.bar-name{font-weight:600}
+@media (max-width:760px){.bar-row{grid-template-columns:1fr; gap:4px}}
+
+.inputs{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px;}
+.inputs label{display:grid; gap:4px; font-size:13.5px; color:var(--ink2);}
+.inputs input[type=number]{width:110px; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); font:inherit;}
+.picks{display:grid; gap:6px; margin-top:12px;}
+.pickrow{display:flex; gap:10px; align-items:flex-start; padding:9px 12px; border:1px solid var(--line); background:var(--surface); border-radius:10px;}
+.pickrow input{margin-top:4px}
+.pickrow .pp{margin-left:auto; font-family:var(--serif); font-size:20px; white-space:nowrap;}
+.pickrow small{display:block; color:var(--ink2)}
+.results{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:16px;}
+.result{padding:14px 16px; border:1px solid var(--line); background:var(--surface); border-radius:10px;}
+.result .big{font-family:var(--serif); font-size:34px; line-height:1.1; margin-top:2px;}
+.result.main{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
+.tiercard{padding:14px 16px; border:1px solid var(--line); border-radius:10px; background:var(--surface);}
+.tiercard .big{font-family:var(--serif); font-size:26px;}
+
+footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); color:var(--ink2); font-size:13px;}
+
+@media (max-width:900px){
+  .split{grid-template-columns:1fr; gap:18px;}
+  .rail{position:static; max-height:none;}
+  .two{grid-template-columns:1fr}
+  .pane-head h2{font-size:30px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>AI tool decision board</h1>
+      <p class="sub">NSS AI Fluency series. Internal working document. Facts verified October 1, 2026.</p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" data-tab="tools" aria-selected="true">Tools</button>
+      <button class="tab" role="tab" data-tab="usage" aria-selected="false">Usage</button>
+      <button class="tab" role="tab" data-tab="cost" aria-selected="false">Student cost</button>
+      <button class="tab" role="tab" data-tab="evidence" aria-selected="false">Evidence and gaps</button>
+    </nav>
+  </header>
+  <main id="view"></main>
+  <footer>
+    Prices, plans, and regional availability for these products have changed monthly. Treat every figure as a snapshot and check the vendor page the week you publish anything student-facing.
+    The author of this board is Claude, made by Anthropic, so the notes on Claude and Cowork carry a disclosure.
+  </footer>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+var CONF = {high:"High", med:"Medium", low:"Low", none:"Not published"};
+var TIERS = {
+  t1:"Tier 1: hands-on in class",
+  t2:"Tier 2: reading variant",
+  t3:"Tier 3: security case study",
+  t4:"Tier 4: enterprise fork only",
+  tw:"Watchlist: not for students"
+};
+var VERIFIED = "Oct 1, 2026";
+
+var TOOLS = [
+{
+ id:"gemini-notebook", name:"Gemini Notebook", vendor:"Google", kind:"Grounding (answers only from your sources)", group:"book1", tier:"t1", books:"Book 1",
+ free:true, entry:0, entryLabel:"Free",
+ pitch:"A research notebook that answers only from the documents you add, with citations back to the source.",
+ ladder:[
+  {n:"Free", p:"$0", d:"100 notebooks, 50 sources each, 50 chat queries a day.", entry:true},
+  {n:"Google AI Plus", p:"$4.99", d:"Higher limits."},
+  {n:"Google AI Pro", p:"$19.99", d:"Higher source limits. Also unlocks Spark."},
+  {n:"Google AI Ultra", p:"$99.99+", d:"Highest limits."}
+ ],
+ access:["A Google account.","Renamed from NotebookLM on July 16, 2026.","Paid source limits are reported differently by different sources (100 to 600 per notebook). Verify before relying on a number."],
+ controls:["Read-only. It answers and summarizes; it takes no actions in your accounts."],
+ risks:["Grounded does not mean correct. It can still misread a source.","Whatever you upload is client data."],
+ usage:[{k:"Dedicated user count", v:"Not published. Counted inside the Gemini app (950M monthly users, Q2 2026).", src:"Alphabet Q2 2026 call", c:"none"}],
+ observed:[], stated:["Research, study guides, audio and video overviews, reports built from your own sources."],
+ power:{r:"near", good:["Google distribution and a generous free tier."], bad:["Frequent renames and plan changes."]}
+},
+{
+ id:"claude-chat", name:"Claude (chat and Projects)", vendor:"Anthropic", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1",
+ free:true, entry:0, entryLabel:"Free",
+ pitch:"A chat assistant with saved projects and standing instructions, for the longer-running conversations in Book 1.",
+ ladder:[
+  {n:"Free", p:"$0", d:"Core chat.", entry:true},
+  {n:"Pro", p:"$20", d:"About $20 a month. Also unlocks Cowork."},
+  {n:"Max", p:"$100+", d:"From $100 a month. Headroom for heavy use."}
+ ],
+ access:["Web, desktop, and mobile apps."],
+ controls:["Chat only unless you enable connectors."],
+ risks:["Fluent text is easy to over-trust. This is what the Book 1 verification skills train against."],
+ usage:[
+  {k:"Monthly users", v:"245M (Sensor Tower, May 2026). Another tracker says 56M.", src:"Sensor Tower via trade press", c:"med"},
+  {k:"Web traffic share", v:"9.3% of chatbot web visits (Aug 2026).", src:"Similarweb", c:"med"},
+  {k:"Time per user", v:"About 120 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med"},
+  {k:"Official user total", v:"One source says Anthropic does not publish one.", src:"SQ Magazine", c:"low"}
+ ],
+ observed:[
+  {v:"Work, personal, and coursework split: 43%, 40%, 16% of classified conversations (May 2026 snapshot).", src:"Anthropic Economic Index, restated by a third party", c:"med"},
+  {v:"Computer and mathematical tasks are the top category at 23.8%. The index counts conversations, not people.", src:"Anthropic Economic Index", c:"med"}
+ ], stated:[],
+ power:{r:"likely", good:["About 13% of users pay, the best rate among major assistants (one source).","Strong share of enterprise spend (estimates conflict: 40% versus 24%)."], bad:["Smaller consumer base than ChatGPT or Gemini.","Usage limits."]},
+ bias:"Claude is built by Anthropic, which also made this board. Weigh the staying-power read accordingly."
+},
+{
+ id:"chatgpt-chat", name:"ChatGPT (chat and Projects)", vendor:"OpenAI", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1 (any chat LLM works)",
+ free:true, entry:0, entryLabel:"Free",
+ pitch:"The most familiar chat assistant, with projects and memory. Interchangeable with Claude for Book 1.",
+ ladder:[
+  {n:"Free", p:"$0", d:"Core chat.", entry:true},
+  {n:"Plus", p:"$20", d:"Higher limits; agent features on web and mobile."},
+  {n:"Pro", p:"$100+", d:"Reported from $100 after the Sept 29 changes (earlier $200)."},
+  {n:"Pro 500", p:"$500", d:"New top tier announced Sept 29."}
+ ],
+ access:["Web, desktop, and mobile apps."],
+ controls:["Chat only unless connectors are enabled."],
+ risks:["Same over-trust risk as any chat assistant."],
+ usage:[
+  {k:"Weekly users", v:"900M confirmed by OpenAI in Feb 2026. Two sources say OpenAI later reported 1B weekly.", src:"OpenAI via TechCrunch and others", c:"med"},
+  {k:"Monthly users", v:"About 1.1B (third-party estimates).", src:"Sensor Tower, trade press", c:"med"},
+  {k:"Time per user", v:"About 215 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med"},
+  {k:"Web traffic share", v:"52.7% of chatbot web visits (May 2026).", src:"Similarweb", c:"med"}
+ ],
+ observed:[
+  {v:"Top uses: practical guidance 28.3%, writing and editing 28.1%, seeking information 21.3% of messages.", src:"OpenAI study, consumer plans only, data to July 2025", c:"med"},
+  {v:"Writing is 42% of work-related messages. Programming is only 4.2% of all messages.", src:"OpenAI study via press", c:"med"}
+ ], stated:[],
+ power:{r:"near", good:["Largest reach. Most students already know it."], bad:["Share slipping to Gemini and Claude.","Atlas browser sunset within nine months of launch."]}
+},
+{
+ id:"cowork", name:"Claude Cowork", vendor:"Anthropic", kind:"Desktop agent (files and connected apps)", group:"agents", tier:"t1", books:"Books 2 and 3",
+ free:false, entry:20, entryLabel:"$20/mo",
+ pitch:"An agent in the Claude desktop app. It works in the folders you grant, uses connected apps, and asks before irreversible steps.",
+ ladder:[
+  {n:"Free", p:"$0", d:"Cowork is not included."},
+  {n:"Pro", p:"$20", d:"Cowork is on every paid plan. Heavy sessions use far more quota than chat.", entry:true},
+  {n:"Max", p:"$100+", d:"Needed only if Pro runs out mid-exercise. Not yet tested."}
+ ],
+ access:["Desktop app with folder-scoped local access. Web and mobile also exist; mobile hands tasks to your desktop.","Many free connectors via MCP, plus scheduled tasks.","Windows versus Mac support and Chromebook compatibility are not verified here."],
+ controls:["Asks approval before permanently deleting files and other irreversible actions.","You grant access folder by folder; work runs in a sandboxed environment.","Global and folder-level instructions."],
+ risks:["Real files, real consequences. A mistake can overwrite or delete.","Quota burn on a $20 plan is untested for our exercises. Run one real exercise before choosing a cost tier."],
+ usage:[
+  {k:"Active users", v:"Not published.", src:"-", c:"none"},
+  {k:"Research sample", v:"Anthropic analyzed 1.2M anonymized sessions. That is a sample size, not a user count.", src:"Anthropic, via press", c:"med"}
+ ],
+ observed:[
+  {v:"Data and spreadsheet work is over-represented in Cowork and especially autonomous.", src:"Anthropic Economic Index, June 2026", c:"high"},
+  {v:"33.4% of 1.2M sampled sessions were business process and operations: reports, onboarding checklists, reconciling spreadsheets.", src:"Anthropic data via a trade article", c:"med"}
+ ], stated:[],
+ power:{r:"likely", good:["Early and well-regarded in the agent category.","Copilot Cowork runs on Anthropic models, which spreads the bet."], bad:["Usage limits bite on lower plans.","Smaller consumer footprint than its rivals."]},
+ bias:"Cowork is the tool this course standardizes on, and it is made by the company that built this board. Run the same exercise in ChatGPT Work before locking the decision."
+},
+{
+ id:"chatgpt-work", name:"ChatGPT Work", vendor:"OpenAI", kind:"Agent mode inside ChatGPT", group:"agents", tier:"t2", books:"Reading variant for Books 2 and 3",
+ free:true, entry:20, entryLabel:"Free desktop, $20 web",
+ pitch:"Longer multi-step jobs inside ChatGPT, with scheduled tasks and finished files.",
+ ladder:[
+  {n:"Free", p:"$0", d:"Desktop app only, with limited usage."},
+  {n:"Plus", p:"$20", d:"Web and mobile access. Shares credits with Codex.", entry:true},
+  {n:"Pro", p:"$100+", d:"Higher usage."}
+ ],
+ access:["Launched July 9, 2026. Desktop app on every plan; web and mobile on paid plans.","No separate price. Work and Codex share credits and limits.","Connectors include Slack, Teams, Drive, SharePoint, and Gmail. Local files on desktop; an Excel add-in; PowerPoint was not in the desktop flow at launch."],
+ controls:["Waits for approval on important actions; you can follow progress and redirect.","Business plans apply enterprise governance policies."],
+ risks:["Complex tasks use more credits than chat.","Sources disagree on the underlying model name, so none is listed here."],
+ usage:[{k:"Active users", v:"Not published.", src:"-", c:"none"}],
+ observed:[], stated:["Research, reports, spreadsheets, slides, and scheduled recurring tasks."],
+ power:{r:"near", good:["Largest consumer base to launch from."], bad:["Frequent product reshuffles (Atlas sunset, Dots launch on top)."]}
+},
+{
+ id:"spark", name:"Gemini Spark", vendor:"Google", kind:"Cloud agent inside the Gemini app", group:"agents", tier:"t2", books:"Reading variant for Books 2 and 3",
+ free:false, entry:19.99, entryLabel:"$19.99/mo",
+ pitch:"An always-on agent that works across Gmail, Calendar, Drive, Docs, and Sheets, even when your laptop is closed.",
+ ladder:[
+  {n:"Free", p:"$0", d:"Not included."},
+  {n:"AI Plus", p:"$4.99", d:"Does not include Spark."},
+  {n:"AI Pro", p:"$19.99", d:"Spark included in every supported country since July 30, 2026.", entry:true},
+  {n:"AI Ultra", p:"$99.99+", d:"Same access, more compute."}
+ ],
+ access:["Personal Google account only. Work, school, and Workspace accounts are not eligible.","18 or older, with Keep Activity turned on.","Switched off in the EEA, UK, Switzerland, and Nigeria (33 countries).","US college students can claim 12 months of Pro free through Dec 31, 2026.","Local file access is Mac-only. Windows app launched Sept 10. Up to 15 tasks run at once."],
+ controls:["Asks first before high-stakes actions such as spending money or sending email.","You choose which apps it connects to."],
+ risks:["Google labels it experimental and asks for your supervision.","Reviewers report context drift in long sessions."],
+ usage:[
+  {k:"Spark users", v:"Not published.", src:"-", c:"none"},
+  {k:"Gemini app", v:"950M monthly users (Q2 2026); Google later said 1B.", src:"Alphabet Q2 2026 call; Google blog", c:"high"}
+ ],
+ observed:[], stated:["Summarize Gmail threads, build meeting briefs from calendar plus email, organize Drive, draft Docs, update Sheets."],
+ power:{r:"near", good:["Google distribution and money.","Nearly 90% of the Fortune 100 use Gemini Enterprise."], bad:["Plan and region rules keep changing.","Pichai acknowledged gaps in agentic coding."]}
+},
+{
+ id:"perplexity", name:"Perplexity Computer and Comet", vendor:"Perplexity", kind:"Research agent and AI browser", group:"agents", tier:"t2", books:"Reading variant (cited research)",
+ free:true, entry:20, entryLabel:"Free browser, $20 agent",
+ pitch:"A research-first agent that cites its sources, plus a free AI browser that acts across your open tabs.",
+ ladder:[
+  {n:"Comet browser", p:"$0", d:"Free on Windows, Mac, iOS, and Android (one source says since March 2026)."},
+  {n:"Pro", p:"$20", d:"Includes Computer.", entry:true},
+  {n:"Max", p:"$200", d:"Highest limits."}
+ ],
+ access:["Computer works inside Word, Excel, PowerPoint, Outlook, and Teams.","Personal Computer for Mac and Windows edits local files.","Routes work across models from several labs."],
+ controls:["Background agent controls and enterprise roles exist. Approval behavior was not verified here."],
+ risks:["Depends on other labs' models.","Small and shrinking share of chatbot traffic."],
+ usage:[
+  {k:"Web traffic share", v:"About 1.3% (May 2026), down from 2.0% in March.", src:"Similarweb via FatJoe", c:"med"},
+  {k:"US mobile daily share", v:"Fell from 6% (Oct 2025) to about 2%.", src:"Apptopia via FatJoe", c:"med"},
+  {k:"Revenue and value", v:"Annualized revenue $450M to $500M; valued at $22.6B.", src:"Trade press", c:"med"},
+  {k:"Monthly users", v:"About 45M.", src:"DemandSage", c:"low"}
+ ],
+ observed:[{v:"About 55% personal, 30% professional, 15% educational. Productivity and workflow is the largest topic, just over a third of queries.", src:"Cornell analysis, relayed secondhand", c:"med"}], stated:[],
+ power:{r:"unc", good:["Strong at sourced research. Computer reaches into Microsoft 365."], bad:["Small share; reliant on rivals' models; acquisition or pivot risk."]}
+},
+{
+ id:"copilot-cowork", name:"Microsoft Copilot Cowork", vendor:"Microsoft", kind:"Enterprise agent in Microsoft 365", group:"agents", tier:"t4", books:"Enterprise fork only",
+ free:false, entry:30, entryLabel:"$30+ plus usage",
+ pitch:"Long-running multi-tool tasks inside Microsoft 365, governed by IT. Not a fit for solopreneurs.",
+ ladder:[
+  {n:"Copilot license", p:"$30", d:"Per user per month. Copilot Business is reported at $18 to $21 with annual commitment.", entry:true},
+  {n:"Usage", p:"$0.01", d:"Per Copilot credit, billed on top."},
+  {n:"E7 bundle", p:"$99", d:"Per user per month; includes Agent 365."}
+ ],
+ access:["Requires a Microsoft 365 Copilot license. Off by default; an admin must enable it.","General availability June 16, 2026.","Runs on Anthropic models at launch (Opus 4.8 and Sonnet 4.6)."],
+ controls:["Admin budgets, spend limits, and usage reporting.","Stays inside Microsoft 365 permissions and compliance policies."],
+ risks:["Variable credit billing is hard to forecast.","Overkill and unaffordable for the pilot audience."],
+ usage:[
+  {k:"Paid Copilot seats", v:"30M+ (July 2026), up from 15M in January. This is Copilot overall, not Cowork.", src:"Microsoft, via XtendedView", c:"med"},
+  {k:"Copilot family", v:"150M+ active users.", src:"Microsoft, via XtendedView", c:"med"},
+  {k:"Chatbot web share", v:"2.8% worldwide, 7.95% in the US (Aug 2026).", src:"Web-traffic tracker via XtendedView", c:"med"},
+  {k:"Cowork-specific", v:"Not published. Only a vague 'thousands of customers' claim.", src:"-", c:"none"}
+ ],
+ observed:[
+  {v:"Of 100,000+ chats: 49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", src:"Microsoft Work Trend Index, via Panto", c:"med"},
+  {v:"Daily use by app: Teams 34%, Outlook 33%, Word 25%.", src:"Government trial data, via Panto", c:"med"},
+  {v:"Why users lapsed: 44.2% distrust accuracy, 28.5% too much editing, 16% unclear use, 8.3% slow. The underlying study is unnamed.", src:"XtendedView", c:"low"}
+ ], stated:["Named large deployments (seat counts, not usage): NHS England 505,000; Accenture 740,000+; KPMG 276,000+; HSBC 200,000."],
+ power:{r:"near", good:["Enormous installed base (450M+ commercial seats)."], bad:["Cowork is a metered add-on and depends on Anthropic models."]}
+},
+{
+ id:"grok-bot", name:"Grok Bot", vendor:"SpaceXAI (xAI, owned by SpaceX)", kind:"Persistent cloud agents ('Bots')", group:"agents", tier:"t3", books:"Reading variant and security case study",
+ free:false, entry:20, entryLabel:"$20 to $30/mo",
+ pitch:"Named, always-on agents that each have a memory and a cloud computer, can be shared as Team Bots, and run on routines.",
+ ladder:[
+  {n:"Free", p:"$0", d:"7-day trial credit only."},
+  {n:"Cursor Pro", p:"$20", d:"Grok Bot included on paid Cursor plans (reported).", entry:true},
+  {n:"SuperGrok", p:"$30", d:"Includes Grok Bot. One source says the $10 Lite plan does not."},
+  {n:"SuperGrok Plus", p:"$100", d:"Much higher usage."},
+  {n:"Heavy", p:"$300", d:"Largest agent team."}
+ ],
+ access:["Needs a Cursor account. SpaceXAI acquired Cursor (Aug 14).","Requires data storage: no Legacy Privacy Mode. Training opt-out follows your Cursor settings.","Team Bots entered public beta Sept 28 on Teams and Enterprise plans.","Download buttons on vendor pages list macOS. Verify Windows before relying on it."],
+ controls:["Allow once, Always allow, or Deny on proposed actions.","Auto Review: a model-based check with Ask first and Allow automatically rules. Ask first wins.","For passwords, two-factor codes, and payments you take over the Bot's computer.","Access to your own computer defaults to Ask every time."],
+ risks:["All your Bots share one cloud computer. xAI says not to treat separate Bots as a security boundary.","Deleting a Bot does not remove its files or browser sessions.","Beta product. Broad Always allow rules are an easy mistake."],
+ usage:[
+  {k:"Weekly users", v:"418,000 as of Sept 14, up 24% week over week. SpaceX did not comment.", src:"Bloomberg, via Briefs", c:"med"},
+  {k:"Grok chat", v:"117M monthly users (SpaceX filing, March 2026); third-party trackers said 50M.", src:"SpaceX IPO filing", c:"med"},
+  {k:"Web traffic share", v:"About 2.8%, flat since March.", src:"Similarweb via FatJoe", c:"med"}
+ ],
+ observed:[], stated:["Vendor case studies, self-reported: procurement found $85,662 a year in unused SaaS seats; support handled 175% more tickets with no new hires at $0.20 to $0.30 each; a small-business insurer says it recovered $120,000 for customers."],
+ power:{r:"unc", good:["SpaceX capital and a $60B Cursor acquisition behind an enterprise push."], bad:["Revenue reported near $500M against about $1B monthly burn (single secondary source).","Co-founders departed; compliance certifications less mature; deepfake investigations in several countries."]}
+},
+{
+ id:"muse", name:"Meta Muse", vendor:"Meta", kind:"Personal agent (app, web, WhatsApp)", group:"agents", tier:"t3", books:"Reading variant and security case study",
+ free:true, entry:0, entryLabel:"Free (card required)",
+ pitch:"A consumer agent with its own secure cloud computer that books, shops, fills forms, and keeps working after you close the app.",
+ ladder:[
+  {n:"Free", p:"$0", d:"A payment card is required at sign-up. Usage meter; size not published.", entry:true},
+  {n:"Power", p:"$20", d:"500M Muse tokens a week."},
+  {n:"Maximum", p:"$100", d:"3B Muse tokens a week."}
+ ],
+ access:["US and Canada only, 18 or older. Needs a Meta account.","iOS, Android, web, Mac, and WhatsApp. No Windows app.","Muse for Small Business launched Sept 29 with QuickBooks, Shopify, Stripe, Slack, and similar connectors."],
+ controls:["Approval cards before it sends, buys, or shares.","A separate Sentinel agent reviews actions before they reach the internet.","Runs in an isolated VM; logins are stored where Muse cannot read them.","Purchases use one-time card numbers (Link by Stripe)."],
+ risks:["Your conversations train Meta's models by default. Opt out in settings.","A Mac app flaw was published Sept 21 and patched in about a day.","Amazon blocked Muse from its store on Sept 20 to 21.","Meta says prompt injection is still unsolved. Reuters reported the launch slipped over internal testing concerns."],
+ usage:[
+  {k:"Downloads", v:"5M US downloads in 22 days. ChatGPT took 56 days; Grok 103; Claude 492.", src:"Sensor Tower via Forbes", c:"med"},
+  {k:"Daily users", v:"About 642,000 US mobile daily users around day 12, versus 231,000 for ChatGPT at the same point.", src:"Apptopia estimate via TechCrunch", c:"med"},
+  {k:"Retention", v:"Unknown. Skeptics call early numbers curiosity-driven, helped by heavy Meta promotion.", src:"Forbes", c:"low"}
+ ],
+ observed:[], stated:["Research, bookings, forms, email, shopping, goal tracking. The small-business version targets advertising, sales, social media, finance, creative work, and customer messages."],
+ power:{r:"unp", good:["Meta's distribution, especially WhatsApp. The company itself is not going anywhere."], bad:["Brand new, unproven retention, trust concerns, and retailer blocks."]}
+},
+{
+ id:"dots", name:"OpenAI Dots", vendor:"OpenAI", kind:"Always-on agent inside ChatGPT", group:"watch", tier:"tw", books:"Watchlist (fails the cost gate)",
+ free:false, entry:100, entryLabel:"$100+/mo",
+ pitch:"OpenAI's answer to Muse, launched Sept 29: persistent agents with their own cloud computer and 4,000+ app connections.",
+ ladder:[
+  {n:"Free, Go, Plus", p:"-", d:"Not included."},
+  {n:"Pro or Business Premium", p:"$100+", d:"One dot included. Reported starting price; sources conflict.", entry:true},
+  {n:"Pro 500", p:"$500", d:"New tier announced the same day."}
+ ],
+ access:["Rolling out from Sept 29 in eligible markets. Enterprise needs admin approval.","Usage does not count against limits for the first month. Per-dot pricing is unpublished."],
+ controls:["Read-only background duties and approval rules; it checks in when it needs a decision."],
+ risks:["Days old. Nothing independent yet on reliability or security."],
+ usage:[{k:"Users", v:"Not published.", src:"-", c:"none"}],
+ observed:[], stated:["OpenAI's examples: shipping bug fixes, rerunning analyses, updating proposals."],
+ power:{r:"near", good:["OpenAI behind it."], bad:["Product unproven. Reportedly follows OpenClaw, whose founder joined OpenAI (The Register)."]}
+},
+{
+ id:"instinct", name:"Instinct", vendor:"Instinct", kind:"Consumer personal agent", group:"watch", tier:"tw", books:"Watchlist",
+ free:false, entry:null, entryLabel:"Invite-only",
+ pitch:"A viral consumer agent known for phone-call concierge tasks and agent-to-agent planning with friends.",
+ ladder:[{n:"Invite-only", p:"-", d:"No public pricing found.", entry:true}],
+ access:["Invite-only since August 2026.","Raised $1B at a $10B valuation on Sept 28."],
+ controls:["Not verified."], risks:["Not verified. Little independent coverage."],
+ usage:[{k:"Users", v:"Not published.", src:"-", c:"none"}],
+ observed:[], stated:["Concierge phone calls and planning with friends' agents."],
+ power:{r:"unp", good:["Well funded."], bad:["Invite-only and unproven."]}
+},
+{
+ id:"jev", name:"Jev (TypeSafe AI)", vendor:"TypeSafe AI", kind:"Developer decision model (infrastructure)", group:"watch", tier:"tw", books:"Concept for Book 3, not a student tool",
+ free:false, entry:null, entryLabel:"API only",
+ pitch:"Returns typed decisions and scores in milliseconds instead of writing text. Used by developers to gate agent actions.",
+ ladder:[{n:"API", p:"$0.042 or $0.42", d:"Per million input tokens. VentureBeat and the vendor site disagree by 10x.", entry:true}],
+ access:["Developer API and MCP server. Launched Sept 15, 2026."],
+ controls:["Used by others to gate agent actions, for example in LangChain middleware."],
+ risks:["VentureBeat reports that prompt injection can influence its verdicts."],
+ usage:[{k:"Early adoption", v:"140,000 waitlist sign-ups cleared in 36 hours; about 13% of Vercel's paid AI Gateway teams in 24 hours.", src:"VentureBeat", c:"med"}],
+ observed:[], stated:["Tool selection, routing, classification, scoring, guardrails."],
+ power:{r:"unp", good:["Fast early uptake."], bad:["Brand new; narrow purpose."]}
+},
+{
+ id:"openclaw", name:"OpenClaw and Hermes Agent", vendor:"Open source", kind:"Self-hosted open-source agents", group:"watch", tier:"tw", books:"Security lesson only",
+ free:true, entry:0, entryLabel:"Free (self-hosted)",
+ pitch:"Free agents you run yourself. Powerful, and the clearest example of what unsafe defaults look like.",
+ ladder:[{n:"Software", p:"$0", d:"Plus your own hosting and model costs.", entry:true}],
+ access:["Self-hosted. A hardened setup takes 30 to 60 minutes (one source)."],
+ controls:["Whatever you configure yourself."],
+ risks:["OpenClaw disclosed 9 vulnerabilities in four days in March 2026, one rated 9.9.","Singapore's cybersecurity agency advises against installing the open-source version on devices with sensitive data."],
+ usage:[{k:"Popularity", v:"OpenClaw passed 347,000 GitHub stars by April 2026. Stars are interest, not users.", src:"Trade press", c:"med"}],
+ observed:[], stated:["Personal automation for technical users. Meta's Muse is modeled on OpenClaw."],
+ power:{r:"likely", good:["Large, active communities."], bad:["Security record; not for beginners."]}
+}
+];
+
+var RATE = {near:["Near-certain","rate-near"], likely:["Likely","rate-likely"], unc:["Uncertain","rate-unc"], unp:["Unproven","rate-unp"]};
+
+/* chart data: latest reported users, definitions differ */
+var REACH = [
+ {n:"ChatGPT", hi:1000, lo:900, label:"900M to 1B weekly", src:"OpenAI statements (Feb and Aug 2026)", c:"med"},
+ {n:"Gemini app", hi:1000, lo:950, label:"950M to 1B monthly", src:"Alphabet Q2 call; Google blog (Aug 2026)", c:"high"},
+ {n:"Meta AI", hi:1000, lo:1000, label:"1B monthly across Meta apps", src:"Meta statement, 2025", c:"low"},
+ {n:"Claude", hi:245, lo:56, label:"56M to 245M monthly", src:"Sensor Tower and another tracker disagree", c:"med"},
+ {n:"Copilot family", hi:150, lo:150, label:"150M+ active", src:"Microsoft via XtendedView (30M+ paid seats)", c:"med"},
+ {n:"Grok", hi:117, lo:50, label:"50M to 117M monthly", src:"Third-party versus SpaceX filing (Mar 2026)", c:"med"},
+ {n:"Perplexity", hi:45, lo:45, label:"About 45M monthly", src:"DemandSage", c:"low"}
+];
+
+var AGENT_SIGNALS = [
+ {t:"Grok Bot", v:"418,000 weekly users (Sept 14), +24% week over week", s:"Bloomberg via Briefs. SpaceX did not comment.", c:"med"},
+ {t:"Meta Muse", v:"5M US downloads in 22 days; about 642,000 US mobile daily users near day 12", s:"Sensor Tower via Forbes; Apptopia via TechCrunch. Retention unknown.", c:"med"},
+ {t:"Claude Cowork", v:"Not published. 1.2M sessions were sampled by Anthropic.", s:"A sample, not a user count.", c:"none"},
+ {t:"ChatGPT Work, Gemini Spark, Copilot Cowork, Dots", v:"Not published", s:"Parent-platform reach only.", c:"none"}
+];
+
+var WORKMIX = [
+ {t:"ChatGPT", v:"Practical guidance 28.3%, writing and editing 28.1%, information 21.3%. Programming 4.2% of messages.", b:"OpenAI study, consumer plans, data to July 2025", c:"med"},
+ {t:"Claude", v:"Work 43%, personal 40%, coursework 16%. Computer and mathematical tasks lead at 23.8%.", b:"Anthropic Economic Index, May 2026 snapshot", c:"med"},
+ {t:"Claude Cowork", v:"Data and spreadsheet work over-represented. 33.4% of sampled sessions were business process and operations.", b:"Anthropic Economic Index, June 2026; trade article", c:"high"},
+ {t:"Copilot", v:"49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", b:"Microsoft Work Trend Index via Panto", c:"med"},
+ {t:"Perplexity", v:"55% personal, 30% professional, 15% educational. Productivity and workflow is the top topic.", b:"Cornell study via FatJoe", c:"med"},
+ {t:"Gemini, Spark, Grok Bot, Muse, Dots", v:"No observed mix published. Only vendor-stated uses.", b:"-", c:"none"}
+];
+
+var INDUSTRY = [
+ {s:"Information", firm:"49.0%", note:"US firms using AI in the two weeks to Sept 6, 2026 (Census)."},
+ {s:"Professional and technical services", firm:"43.9%", note:"Same Census reading."},
+ {s:"Finance and insurance", firm:"41.0%", note:"Workers: 77% use AI at least occasionally, 22% daily (HP survey, Feb 2026). One source says 95% of UK insurers used AI in 2024."},
+ {s:"Health care", firm:"24.7%", note:"Census, Aug 2026. Large-enterprise surveys report 58% to 62%. Workers: 45% occasional, 18% daily."},
+ {s:"All US firms", firm:"23.8%", note:"A different Census cycle shows 23.2%. Most small firms are not using AI yet."},
+ {s:"Marketing (a department, not an industry)", firm:"48% to 75%", note:"Sources disagree: 48% in one, 70% to 75% in another."}
+];
+
+var SOURCES = [
+ {n:"SecondTalent: Gemini statistics (Sept 2026)", g:"A", w:"Gemini reach, enterprise, pricing. Traces figures to Alphabet earnings."},
+ {n:"Alphabet Q2 2026 earnings transcript", g:"A", w:"Primary source: 950M app users, Fortune 100, SMB creative use."},
+ {n:"Instant Press AI statistics", g:"A", w:"Named, dated sources. Good cross-platform summary."},
+ {n:"Panto: Microsoft Copilot statistics", g:"A", w:"Quotes Microsoft's own studies."},
+ {n:"x.ai pages (Grok Bot docs, procurement, support, Team Bots, design)", g:"A", w:"First-party facts. Outcome claims are self-reported, so treat as vendor-stated."},
+ {n:"Forbes and TechCrunch on Muse", g:"A", w:"Cite Sensor Tower and Apptopia estimates. Downloads are not retention."},
+ {n:"Briefs (Bloomberg report on Grok Bot)", g:"B", w:"Single-outlet, anonymous attendees, unconfirmed by SpaceX."},
+ {n:"AI Agents Library (Muse and Spark guides)", g:"B", w:"Detailed and cites Meta and Google, but the site sells training and skills."},
+ {n:"XtendedView: Copilot statistics", g:"B", w:"Useful, but studies are often unnamed."},
+ {n:"FatJoe: Grok and Perplexity stats", g:"B", w:"Secondary roundups of Similarweb and Apptopia data."},
+ {n:"AI Business Weekly: Grok statistics", g:"B", w:"Compiles SpaceX filing figures; finances come from one secondary source."},
+ {n:"Business of Apps: Gemini statistics", g:"Drop", w:"2025 data (47M users). Obsolete."},
+ {n:"ElectroIQ: Gemini statistics", g:"Drop", w:"Dec 2025 and contains unsourced claims."},
+ {n:"Zebracat: Perplexity statistics", g:"Drop", w:"Sept 2025, unsourced, contradicts newer data."},
+ {n:"ivee: Gemini Spark review", g:"Drop", w:"June 2026. Still says Spark is Ultra-only."},
+ {n:"Bloomberg and Seeking Alpha pages", g:"n/a", w:"Block automated access. The Bloomberg figure was read through Briefs."}
+];
+
+var GAPS = [
+ ["Real usage for Cowork, ChatGPT Work, Spark, Dots, and Copilot Cowork","Not published. The board shows 'Not published' rather than guessing."],
+ ["Retention for new agents (Muse especially)","Unknown. Downloads and early daily users only."],
+ ["What people do with Gemini, Spark, Grok Bot, Muse, and Dots","Only vendor-stated uses exist. No observed mix."],
+ ["Which tools each industry uses","Only vendor testimonials and seat counts. No credible per-tool industry data."],
+ ["Unread headlines: an FTC probe, an OpenAI IPO delay, unsecured OpenAI agents posting user images","Seen on news sidebars only. A search for the FTC item found only a 2023 matter. Verify before using."],
+ ["Pricing conflicts: Pro and Dots pricing; Grok Bot plan eligibility; Copilot seat counts","Shown as ranges with a Low or Medium label. Confirm on vendor pages."],
+ ["Hands-on checks: Cowork quota on a $20 plan, Chromebook support, Grok Bot on Windows, nonprofit or education pricing","Needs a test exercise and a call with the vendor. Roughly half a day."]
+];
+
+var CORRECTIONS = [
+ "The '318,800 Cowork community members' figure is a Facebook group run by a training site. It is not a usage metric and has been removed.",
+ "Grok's user count moved from about 50M (third-party) to 117M (SpaceX filing). The filing counts Grok features across X.",
+ "Muse is available in the US and Canada, not US only.",
+ "Gemini Spark is included in Google AI Pro in every supported country since July 30, 2026, not only Ultra.",
+ "Muse uses conversations for model training by default. Earlier summaries omitted this.",
+ "Grok Bot approval controls are documented. An earlier version of this research said they were unclear."
+];
+
+/* ---------- STATE ---------- */
+var state = {tab:"tools", primary:"cowork", compare:[], filter:"all", cost:{months:3, series:2, cohort:20, picks:{}}};
+var COSTPICKS = [
+ {id:"claude-pro", n:"Claude Pro (includes Cowork)", p:20, d:"The tool the course standardizes on for Books 2 and 3.", on:true},
+ {id:"chatgpt-plus", n:"ChatGPT Plus (ChatGPT Work on web)", p:20, d:"Optional reading-variant practice.", on:false},
+ {id:"google-pro", n:"Google AI Pro (Spark and larger Notebook limits)", p:19.99, d:"Personal Google account needed for Spark.", on:false},
+ {id:"perplexity-pro", n:"Perplexity Pro (Computer)", p:20, d:"Comet browser itself is free.", on:false},
+ {id:"cursor-pro", n:"Cursor Pro (Grok Bot access)", p:20, d:"Reported. SuperGrok is $30.", on:false},
+ {id:"muse-power", n:"Muse Power", p:20, d:"Free tier needs a card; US and Canada only.", on:false},
+ {id:"copilot", n:"Microsoft 365 Copilot license (Cowork)", p:30, d:"Plus $0.01 per credit usage. Enterprise only.", on:false},
+ {id:"dots", n:"ChatGPT Pro (for Dots)", p:100, d:"Reported starting price; unpublished per-dot pricing.", on:false}
+];
+COSTPICKS.forEach(function(p){state.cost.picks[p.id]=p.on;});
+
+/* ---------- HELPERS ---------- */
+function $(s,el){return (el||document).querySelector(s);}
+function byId(id){return TOOLS.filter(function(t){return t.id===id;})[0];}
+function conf(c){return '<span class="conf conf-'+c+'">'+CONF[c]+'</span>';}
+function money(n){return "$"+(Math.round(n*100)/100).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});}
+function li(arr){return arr.length? '<ul class="list">'+arr.map(function(x){return "<li>"+x+"</li>";}).join("")+"</ul>" : '<p class="hint">Nothing published.</p>';}
+function passes(t){
+  var f=state.filter;
+  if(f==="all") return true;
+  if(f==="book1") return t.group==="book1";
+  if(f==="agents") return t.group==="agents";
+  if(f==="free") return t.free;
+  if(f==="watch") return t.group==="watch";
+  return true;
+}
+
+/* ---------- TOOLS TAB ---------- */
+function railHTML(){
+  var filters=[["all","All"],["book1","Book 1"],["agents","Books 2 and 3"],["free","Free path"],["watch","Watchlist"]];
+  var h='<div class="filters" role="group" aria-label="Filter tools">'+filters.map(function(f){
+    return '<button class="chip" data-filter="'+f[0]+'" aria-pressed="'+(state.filter===f[0])+'">'+f[1]+'</button>';}).join("")+"</div>";
+  var groups=[["book1","Book 1 tools"],["agents","Books 2 and 3: agents"],["watch","Watchlist"]];
+  groups.forEach(function(g){
+    var items=TOOLS.filter(function(t){return t.group===g[0] && passes(t);});
+    if(!items.length) return;
+    h+='<div class="group-title">'+g[1]+"</div>";
+    items.forEach(function(t){
+      var inCmp=state.compare.indexOf(t.id)>-1;
+      var disabled=(!inCmp && state.compare.length>=2) || t.id===state.primary;
+      h+='<div class="row'+(t.id===state.primary?" is-primary":"")+'">'+
+        '<button class="pick" data-pick="'+t.id+'" aria-current="'+(t.id===state.primary)+'">'+
+        '<span class="nm">'+t.name+'</span>'+
+        '<span class="meta"><span class="dot '+t.tier+'"></span>'+t.entryLabel+"</span></button>"+
+        '<button class="cmp" data-cmp="'+t.id+'" aria-pressed="'+inCmp+'" '+(disabled?"disabled":"")+' aria-label="Compare '+t.name+'">'+(inCmp?"Added":"Compare")+"</button></div>";
+    });
+  });
+  h+='<div class="legend" aria-label="Tier legend">'+Object.keys(TIERS).map(function(k){return '<span><i class="dot '+k+'"></i>'+TIERS[k]+"</span>";}).join("")+"</div>";
+  return h;
+}
+
+function profileHTML(t){
+  var h='<div class="pane-head"><h2>'+t.name+'</h2><p class="lead">'+t.vendor+" - "+t.kind+'</p>'+
+    '<p class="pitch">'+t.pitch+'</p>'+
+    '<div class="tags"><span class="tag '+t.tier+'">'+TIERS[t.tier]+'</span><span class="tag">'+t.books+'</span><span class="tag">Verified '+VERIFIED+'</span></div></div>';
+  if(t.bias) h+='<div class="note info"><strong>Disclosure.</strong> '+t.bias+'</div>';
+  h+='<section class="sec"><h3>Cost ladder</h3><p class="hint">List prices per month. The highlighted step is the cheapest one that works for our class.</p><div class="ladder">'+
+    t.ladder.map(function(s){return '<div class="step'+(s.entry?" entry":"")+'"><div class="price">'+s.p+'</div><div class="pn">'+s.n+'</div><div class="pd">'+s.d+'</div>'+(s.entry?'<span class="badge">Cheapest path for us</span>':"")+"</div>";}).join("")+'</div></section>';
+  h+='<section class="sec"><h3>Who can use it</h3>'+li(t.access)+'</section>';
+  h+='<section class="sec"><div class="two"><div><h3>Built-in controls</h3>'+'<div class="list good">'+li(t.controls)+'</div></div><div><h3>Watch for</h3><div class="list bad">'+li(t.risks)+'</div></div></div></section>';
+  h+='<section class="sec"><h3>Usage</h3><p class="hint">Each figure shows its source and how much to trust it. Different measures (weekly, monthly, downloads) are not interchangeable.</p><div class="tbl-wrap"><table><thead><tr><th>Measure</th><th>Figure</th><th>Source</th><th>Confidence</th></tr></thead><tbody>'+
+    t.usage.map(function(u){return "<tr><td>"+u.k+"</td><td>"+u.v+"</td><td>"+u.src+"</td><td>"+conf(u.c)+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+  h+='<section class="sec"><h3>What people do with it</h3>';
+  if(t.observed.length){
+    h+='<p class="sub-h">Observed use</p><div class="tbl-wrap"><table><thead><tr><th>Finding</th><th>Basis</th><th>Confidence</th></tr></thead><tbody>'+
+     t.observed.map(function(o){return "<tr><td>"+o.v+"</td><td>"+o.src+"</td><td>"+conf(o.c)+"</td></tr>";}).join("")+"</tbody></table></div>";
+  } else {
+    h+='<p class="sub-h">Observed use '+conf("none")+'</p><p class="hint">No usage mix has been published for this tool.</p>';
+  }
+  if(t.stated.length){ h+='<p class="sub-h" style="margin-top:14px">Vendor-stated use</p>'+li(t.stated); }
+  h+='</section>';
+  var r=RATE[t.power.r];
+  h+='<section class="sec"><h3>Staying power</h3><p class="hint">My judgment for the next two years, not a forecast from a source.</p><p><span class="rate '+r[1]+'">'+r[0]+'</span></p><div class="two" style="margin-top:12px"><div><p class="sub-h">Working in its favor</p><div class="list good">'+li(t.power.good)+'</div></div><div><p class="sub-h">Working against it</p><div class="list bad">'+li(t.power.bad)+'</div></div></div></section>';
+  return h;
+}
+
+function compareHTML(){
+  var ids=[state.primary].concat(state.compare);
+  var ts=ids.map(byId);
+  var rows=[
+   ["Course tier", function(t){return '<span class="tag '+t.tier+'">'+TIERS[t.tier]+"</span>";}],
+   ["Type", function(t){return t.kind;}],
+   ["Books", function(t){return t.books;}],
+   ["Cheapest path", function(t){return "<strong>"+t.entryLabel+"</strong>";}],
+   ["Cost ladder", function(t){return '<ul class="list">'+t.ladder.map(function(s){return "<li>"+s.n+": "+s.p+"</li>";}).join("")+"</ul>";}],
+   ["Who can use it", function(t){return li(t.access);}],
+   ["Built-in controls", function(t){return li(t.controls);}],
+   ["Watch for", function(t){return li(t.risks);}],
+   ["Usage", function(t){return t.usage.map(function(u){return "<p><strong>"+u.k+":</strong> "+u.v+" "+conf(u.c)+"</p>";}).join("");}],
+   ["What people do", function(t){
+      var out=""; if(t.observed.length){out+=t.observed.map(function(o){return "<p>"+o.v+" "+conf(o.c)+"</p>";}).join("");} else {out+="<p>Observed mix "+conf("none")+"</p>";}
+      if(t.stated.length){out+='<p><em>Vendor-stated:</em> '+t.stated[0]+"</p>";} return out;}],
+   ["Staying power", function(t){var r=RATE[t.power.r]; return '<span class="rate '+r[1]+'">'+r[0]+"</span>"+li(t.power.bad.slice(0,2));}]
+  ];
+  var h='<div class="cmp-bar"><h2 style="font-size:26px">Side by side</h2><button class="btn" data-clear="1">Clear comparison</button><span class="hint" style="margin:0">Pick up to two tools to compare with '+byId(state.primary).name+'. The first column stays put when you scroll sideways.</span></div>';
+  h+='<div class="tbl-wrap"><table class="cmp-table"><thead><tr><th></th>'+ts.map(function(t,i){return '<th><span class="nm-h">'+t.name+"</span>"+(i>0?'<button class="x" data-remove="'+t.id+'">Remove</button>':"")+"</th>";}).join("")+"</tr></thead><tbody>";
+  rows.forEach(function(r){h+="<tr><td>"+r[0]+"</td>"+ts.map(function(t){return "<td>"+r[1](t)+"</td>";}).join("")+"</tr>";});
+  h+="</tbody></table></div>";
+  return h;
+}
+
+function toolsHTML(){
+  var t=byId(state.primary);
+  var main = state.compare.length? compareHTML() : profileHTML(t);
+  return '<div class="split"><aside class="rail" aria-label="Tool list">'+railHTML()+'</aside><section class="pane" aria-live="polite">'+main+"</section></div>";
+}
+
+/* ---------- USAGE TAB ---------- */
+function usageHTML(){
+  var max=1000;
+  var h='<div class="pane" style="margin-top:22px"><div class="pane-head"><h2>Usage and what people do</h2><p class="lead">What exists, what does not, and how far to trust it.</p></div>';
+  h+='<section class="sec"><h3>Platform reach</h3><p class="hint">Latest reported users. Definitions differ (weekly versus monthly; app versus across apps), so compare size roughly, not exactly. Solid bar is the low estimate, faded bar the high. Hatched means Medium or Low confidence.</p><div class="bars">';
+  REACH.forEach(function(r){
+    h+='<div class="bar-row"><div class="bar-name">'+r.n+'</div><div class="bar-track" role="img" aria-label="'+r.n+': '+r.label+'"><div class="bar-max" style="width:'+(r.hi/max*100)+'%"></div><div class="bar-fill '+(r.c==="high"?"":r.c)+'" style="width:'+(r.lo/max*100)+'%"></div></div><div class="bar-label">'+r.label+" "+conf(r.c)+"<small>"+r.src+"</small></div></div>";
+  });
+  h+='</div><div class="note">These are chatbot platforms. They say little about how many people run an agent such as Cowork, Work, or Spark.</div></section>';
+  h+='<section class="sec"><h3>Agent usage signals</h3><p class="hint">The only agent-specific numbers we found.</p><div class="tbl-wrap"><table><thead><tr><th>Agent</th><th>Signal</th><th>Caveat</th><th>Confidence</th></tr></thead><tbody>'+
+    AGENT_SIGNALS.map(function(a){return "<tr><td>"+a.t+"</td><td>"+a.v+"</td><td>"+a.s+"</td><td>"+conf(a.c)+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+  h+='<section class="sec"><h3>What people do</h3><p class="hint">Each vendor classifies its own data differently, so rows are not directly comparable. Conversations and messages are not people.</p><div class="tbl-wrap"><table><thead><tr><th>Tool</th><th>Observed mix</th><th>Basis</th><th>Confidence</th></tr></thead><tbody>'+
+    WORKMIX.map(function(a){return "<tr><td>"+a.t+"</td><td>"+a.v+"</td><td>"+a.b+"</td><td>"+conf(a.c)+"</td></tr>";}).join("")+"</tbody></table></div>"+
+    '<div class="note info"><strong>For our audience.</strong> Everyday writing, analysis, admin, and spreadsheet work is the common ground. Coding is a small share of ChatGPT use and a larger share of Claude use, so do not assume it dominates for solopreneurs.</div></section>';
+  h+='<section class="sec"><h3>Industry cross-section</h3><p class="hint">Market-level adoption, not per tool. No credible source ties a specific tool to a specific industry.</p><div class="tbl-wrap"><table><thead><tr><th>Sector</th><th>Firms using AI</th><th>Notes</th></tr></thead><tbody>'+
+    INDUSTRY.map(function(a){return "<tr><td>"+a.s+"</td><td>"+a.firm+"</td><td>"+a.note+"</td></tr>";}).join("")+"</tbody></table></div>"+
+    '<div class="note"><strong>Managing expectations.</strong> About three in four US firms were not using AI in the latest Census window, and "ever use" runs far ahead of "daily use". Large-enterprise surveys run much higher because they measure big organizations.</div></section></div>';
+  return h;
+}
+
+/* ---------- COST TAB ---------- */
+function costHTML(){
+  var c=state.cost;
+  var monthly=0; COSTPICKS.forEach(function(p){ if(c.picks[p.id]) monthly+=p.p; });
+  var perSeries=monthly*c.months;
+  var perStudent=perSeries*c.series;
+  var cohortTotal=perStudent*c.cohort;
+  var h='<div class="pane" style="margin-top:22px"><div class="pane-head"><h2>Student cost</h2><p class="lead">Book 1 can run entirely on free tools. Books 2 and 3 need a paid Claude plan if exercises run live in Cowork.</p></div>';
+  h+='<section class="sec"><h3>Build a tool stack</h3><p class="hint">Tick the plans a student would need. Everything uses list prices.</p>'+
+    '<div class="inputs"><label>Months per series<input type="number" min="1" max="12" step="1" id="in-months" value="'+c.months+'"></label>'+
+    '<label>Series using paid tools<input type="number" min="1" max="3" step="1" id="in-series" value="'+c.series+'"></label>'+
+    '<label>Cohort size<input type="number" min="1" max="200" step="1" id="in-cohort" value="'+c.cohort+'"></label></div>'+
+    '<div class="picks">'+COSTPICKS.map(function(p){return '<label class="pickrow"><input type="checkbox" data-pick="'+p.id+'" '+(c.picks[p.id]?"checked":"")+'><span>'+p.n+'<small>'+p.d+'</small></span><span class="pp">'+money(p.p)+'</span></label>';}).join("")+"</div>"+
+    '<div class="results"><div class="result"><div>Monthly per student</div><div class="big">'+money(monthly)+'</div></div><div class="result main"><div>Per student, all series</div><div class="big">'+money(perStudent)+'</div></div><div class="result"><div>Cohort of '+c.cohort+'</div><div class="big">'+money(cohortTotal)+'</div></div></div>'+
+    '<div class="note">Cowork sessions can use much more quota than chat. Run one real exercise on a $20 plan before treating this as final. Usage-billed products (Copilot credits, Dots) will cost more than the list price shown.</div></section>';
+  var t1=20*c.months*c.series, t3=100*c.months*c.series;
+  h+='<section class="sec"><h3>Cost tiers to decide between</h3><div class="grid3">'+
+    '<div class="tiercard"><strong>Tier 0: free only</strong><div class="big">$0</div><p>Free tiers plus handout simulated mode. Cowork has no free tier, so it cannot be the hands-on tool.</p></div>'+
+    '<div class="tiercard"><strong>Tier 1: student buys Claude Pro</strong><div class="big">'+money(t1)+'</div><p>Per student across '+c.series+' series at '+c.months+' months each. Book 1 stays free.</p></div>'+
+    '<div class="tiercard"><strong>Tier 2: NSS or partner covers it</strong><div class="big">'+money(t1*c.cohort)+'</div><p>For a cohort of '+c.cohort+'. The strongest equity fit for the Corner to Corner classes.</p></div>'+
+    '<div class="tiercard"><strong>Tier 3: Max for heavy use</strong><div class="big">'+money(t3)+'</div><p>Per student. Justified only if the Pro quota test fails.</p></div>'+
+    '<div class="tiercard"><strong>Tier 4: institutional deal</strong><div class="big">Unknown</div><p>Nonprofit, education, or team pricing. Ask the vendor directly. No program has been verified. Anthropic made this board, so get the same quote from OpenAI.</p></div></div></section></div>';
+  return h;
+}
+
+/* ---------- EVIDENCE TAB ---------- */
+function evidenceHTML(){
+  var h='<div class="pane" style="margin-top:22px"><div class="pane-head"><h2>Evidence and gaps</h2><p class="lead">What this board rests on, what it cannot tell you, and the rules for adding tools.</p></div>';
+  h+='<section class="sec"><h3>Intake gate for new tools</h3><p class="hint">A tool joins the main list only if the answer to all three is yes. Otherwise it goes on the watchlist.</p>'+
+   '<ul class="list"><li>Is it an end-user product that a non-developer can use?</li><li>Does it map to a Book in the series?</li><li>Does it have a layperson cost and access path (free or about $30 a month, available in the US)?</li></ul>'+
+   '<p class="hint" style="margin-top:10px">Jev, OpenAI Dots, and Instinct are on the watchlist because of this gate. Freeze Tier 1 and Tier 2 on a set date and review quarterly.</p></section>';
+  h+='<section class="sec"><h3>Confidence labels</h3><p>'+conf("high")+' first-party or primary source. '+conf("med")+' reputable secondary source or third-party estimate. '+conf("low")+' single blog, unsourced, or conflicting. '+conf("none")+' no figure exists.</p></section>';
+  h+='<section class="sec"><h3>Sources reviewed</h3><div class="tbl-wrap"><table><thead><tr><th>Source</th><th>Grade</th><th>How it was used</th></tr></thead><tbody>'+
+    SOURCES.map(function(s){return "<tr><td>"+s.n+"</td><td><strong>"+s.g+"</strong></td><td>"+s.w+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+  h+='<section class="sec"><h3>Open gaps</h3><div class="tbl-wrap"><table><thead><tr><th>Gap</th><th>How the board handles it</th></tr></thead><tbody>'+
+    GAPS.map(function(g){return "<tr><td>"+g[0]+"</td><td>"+g[1]+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+  h+='<section class="sec"><h3>Corrections made along the way</h3>'+li(CORRECTIONS)+"</section></div>";
+  return h;
+}
+
+/* ---------- RENDER + EVENTS ---------- */
+function render(){
+  var v=$("#view");
+  var html = state.tab==="tools"? toolsHTML() : state.tab==="usage"? usageHTML() : state.tab==="cost"? costHTML() : evidenceHTML();
+  v.innerHTML=html;
+  document.querySelectorAll(".tab").forEach(function(b){b.setAttribute("aria-selected", b.getAttribute("data-tab")===state.tab);});
+}
+document.addEventListener("click",function(e){
+  var el=e.target.closest("button, input");
+  if(!el) return;
+  if(el.classList.contains("tab")){ state.tab=el.getAttribute("data-tab"); render(); window.scrollTo(0,0); return; }
+  if(el.hasAttribute("data-filter")){ state.filter=el.getAttribute("data-filter"); render(); return; }
+  if(el.hasAttribute("data-pick") && el.tagName==="BUTTON"){
+    var id=el.getAttribute("data-pick");
+    state.primary=id; state.compare=state.compare.filter(function(x){return x!==id;});
+    render(); if(window.innerWidth<=900){ $(".pane").scrollIntoView({behavior:"smooth"}); } return; }
+  if(el.hasAttribute("data-cmp")){
+    var cid=el.getAttribute("data-cmp"); var i=state.compare.indexOf(cid);
+    if(i>-1) state.compare.splice(i,1); else if(state.compare.length<2) state.compare.push(cid);
+    render(); return; }
+  if(el.hasAttribute("data-clear")){ state.compare=[]; render(); return; }
+  if(el.hasAttribute("data-remove")){ var rid=el.getAttribute("data-remove"); state.compare=state.compare.filter(function(x){return x!==rid;}); render(); return; }
+});
+document.addEventListener("change",function(e){
+  var el=e.target;
+  if(el.id==="in-months"){ state.cost.months=Math.max(1,Math.min(12,+el.value||1)); render(); return; }
+  if(el.id==="in-series"){ state.cost.series=Math.max(1,Math.min(3,+el.value||1)); render(); return; }
+  if(el.id==="in-cohort"){ state.cost.cohort=Math.max(1,Math.min(200,+el.value||1)); render(); return; }
+  if(el.type==="checkbox" && el.hasAttribute("data-pick")){ state.cost.picks[el.getAttribute("data-pick")]=el.checked; render(); return; }
+});
+render();
+</script>
+</body>
+</html>
