@@ -169,6 +169,20 @@ tr:last-child td{border-bottom:0}
 .tiercard{padding:14px 16px; border:1px solid var(--line); border-radius:10px; background:var(--surface);}
 .tiercard .big{font-family:var(--serif); font-size:26px;}
 
+
+button.conf{font:inherit; font-size:12px; line-height:1.4; appearance:none; -webkit-appearance:none; cursor:help;}
+.conf.has-src{text-decoration:underline dotted; text-underline-offset:3px;}
+.conf.has-src:hover{filter:brightness(.96);}
+#tip{position:fixed; z-index:50; width:max-content; max-width:min(380px, calc(100vw - 16px)); background:var(--surface); color:var(--ink); border:1px solid var(--ink2); border-radius:10px; padding:10px 12px; box-shadow:0 6px 24px rgba(0,0,0,.2); font-size:13px;}
+#tip[hidden]{display:none;}
+.tip-h{font-weight:600; margin-bottom:4px;}
+.srcs li{padding:5px 0; border-bottom:1px solid var(--mute); display:flex; gap:10px; justify-content:space-between; align-items:baseline;}
+.srcs li:last-child{border-bottom:0;}
+.srcs .g{color:var(--ink2); font-size:12px; white-space:nowrap;}
+.insrc{color:var(--ink2); font-size:12.5px; margin-top:4px;}
+.top-right{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center;}
+.reflink{background:transparent; border:0; color:var(--accent); text-decoration:underline; text-underline-offset:3px; padding:8px 4px; font-weight:500;}
+
 footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); color:var(--ink2); font-size:13px;}
 
 @media (max-width:900px){
@@ -185,14 +199,15 @@ footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); colo
   <header class="top">
     <div>
       <h1>AI tool decision board</h1>
-      <p class="sub">NSS AI Fluency series. Internal working document. Facts verified October 1, 2026.</p>
+      <p class="sub">NSS AI Fluency series. Internal working document. Facts verified October 1, 2026. Hover, focus, or tap any confidence tag to see its sources.</p>
     </div>
+    <div class="top-right"><button class="reflink" id="ref-top" type="button">All sources</button>
     <nav class="tabs" role="tablist" aria-label="Sections">
       <button class="tab" role="tab" data-tab="tools" aria-selected="true">Tools</button>
       <button class="tab" role="tab" data-tab="usage" aria-selected="false">Usage</button>
       <button class="tab" role="tab" data-tab="cost" aria-selected="false">Student cost</button>
       <button class="tab" role="tab" data-tab="evidence" aria-selected="false">Evidence and gaps</button>
-    </nav>
+    </nav></div>
   </header>
   <main id="view"></main>
   <footer>
@@ -215,7 +230,7 @@ var VERIFIED = "Oct 1, 2026";
 
 var TOOLS = [
 {
- id:"gemini-notebook", name:"Gemini Notebook", vendor:"Google", kind:"Grounding (answers only from your sources)", group:"book1", tier:"t1", books:"Book 1",
+ id:"gemini-notebook", refs:["rgb","prosper","alphabet"], name:"Gemini Notebook", vendor:"Google", kind:"Grounding (answers only from your sources)", group:"book1", tier:"t1", books:"Book 1",
  free:true, entry:0, entryLabel:"Free",
  pitch:"A research notebook that answers only from the documents you add, with citations back to the source.",
  ladder:[
@@ -227,12 +242,12 @@ var TOOLS = [
  access:["A Google account.","Renamed from NotebookLM on July 16, 2026.","Paid source limits are reported differently by different sources (100 to 600 per notebook). Verify before relying on a number."],
  controls:["Read-only. It answers and summarizes; it takes no actions in your accounts."],
  risks:["Grounded does not mean correct. It can still misread a source.","Whatever you upload is client data."],
- usage:[{k:"Dedicated user count", v:"Not published. Counted inside the Gemini app (950M monthly users, Q2 2026).", src:"Alphabet Q2 2026 call", c:"none"}],
+ usage:[{k:"Dedicated user count", v:"Not published. Counted inside the Gemini app (950M monthly users, Q2 2026).", src:"Alphabet Q2 2026 call", c:"none", r:["alphabet"]}],
  observed:[], stated:["Research, study guides, audio and video overviews, reports built from your own sources."],
  power:{r:"near", good:["Google distribution and a generous free tier."], bad:["Frequent renames and plan changes."]}
 },
 {
- id:"claude-chat", name:"Claude (chat and Projects)", vendor:"Anthropic", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1",
+ id:"claude-chat", refs:["anthropic-ei","gptinsights","devstory","sqmag"], name:"Claude (chat and Projects)", vendor:"Anthropic", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1",
  free:true, entry:0, entryLabel:"Free",
  pitch:"A chat assistant with saved projects and standing instructions, for the longer-running conversations in Book 1.",
  ladder:[
@@ -244,20 +259,20 @@ var TOOLS = [
  controls:["Chat only unless you enable connectors."],
  risks:["Fluent text is easy to over-trust. This is what the Book 1 verification skills train against."],
  usage:[
-  {k:"Monthly users", v:"245M (Sensor Tower, May 2026). Another tracker says 56M.", src:"Sensor Tower via trade press", c:"med"},
-  {k:"Web traffic share", v:"9.3% of chatbot web visits (Aug 2026).", src:"Similarweb", c:"med"},
-  {k:"Time per user", v:"About 120 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med"},
-  {k:"Official user total", v:"One source says Anthropic does not publish one.", src:"SQ Magazine", c:"low"}
+  {k:"Monthly users", v:"245M (Sensor Tower, May 2026). Another tracker says 56M.", src:"Sensor Tower via trade press", c:"med", r:["devstory","techinsider-chatgpt"]},
+  {k:"Web traffic share", v:"9.3% of chatbot web visits (Aug 2026).", src:"Similarweb", c:"med", r:["st-llm"]},
+  {k:"Time per user", v:"About 120 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med", r:["st-gemini"]},
+  {k:"Official user total", v:"One source says Anthropic does not publish one.", src:"SQ Magazine", c:"low", r:["sqmag"]}
  ],
  observed:[
-  {v:"Work, personal, and coursework split: 43%, 40%, 16% of classified conversations (May 2026 snapshot).", src:"Anthropic Economic Index, restated by a third party", c:"med"},
-  {v:"Computer and mathematical tasks are the top category at 23.8%. The index counts conversations, not people.", src:"Anthropic Economic Index", c:"med"}
+  {v:"Work, personal, and coursework split: 43%, 40%, 16% of classified conversations (May 2026 snapshot).", src:"Anthropic Economic Index, restated by a third party", c:"med", r:["gptinsights"]},
+  {v:"Computer and mathematical tasks are the top category at 23.8%. The index counts conversations, not people.", src:"Anthropic Economic Index", c:"med", r:["gptinsights","anthropic-ei"]}
  ], stated:[],
  power:{r:"likely", good:["About 13% of users pay, the best rate among major assistants (one source).","Strong share of enterprise spend (estimates conflict: 40% versus 24%)."], bad:["Smaller consumer base than ChatGPT or Gemini.","Usage limits."]},
  bias:"Claude is built by Anthropic, which also made this board. Weigh the staying-power read accordingly."
 },
 {
- id:"chatgpt-chat", name:"ChatGPT (chat and Projects)", vendor:"OpenAI", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1 (any chat LLM works)",
+ id:"chatgpt-chat", refs:["techchecker","techinsider-chatgpt","usecarly","techinsider-dots"], name:"ChatGPT (chat and Projects)", vendor:"OpenAI", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1 (any chat LLM works)",
  free:true, entry:0, entryLabel:"Free",
  pitch:"The most familiar chat assistant, with projects and memory. Interchangeable with Claude for Book 1.",
  ladder:[
@@ -270,19 +285,19 @@ var TOOLS = [
  controls:["Chat only unless connectors are enabled."],
  risks:["Same over-trust risk as any chat assistant."],
  usage:[
-  {k:"Weekly users", v:"900M confirmed by OpenAI in Feb 2026. Two sources say OpenAI later reported 1B weekly.", src:"OpenAI via TechCrunch and others", c:"med"},
-  {k:"Monthly users", v:"About 1.1B (third-party estimates).", src:"Sensor Tower, trade press", c:"med"},
-  {k:"Time per user", v:"About 215 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med"},
-  {k:"Web traffic share", v:"52.7% of chatbot web visits (May 2026).", src:"Similarweb", c:"med"}
+  {k:"Weekly users", v:"900M confirmed by OpenAI in Feb 2026. Two sources say OpenAI later reported 1B weekly.", src:"OpenAI via TechCrunch and others", c:"med", r:["techchecker","techinsider-chatgpt"]},
+  {k:"Monthly users", v:"About 1.1B (third-party estimates).", src:"Sensor Tower, trade press", c:"med", r:["aibw-share","techinsider-chatgpt"]},
+  {k:"Time per user", v:"About 215 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med", r:["st-gemini"]},
+  {k:"Web traffic share", v:"52.7% of chatbot web visits (May 2026).", src:"Similarweb", c:"med", r:["aibw-share","fatjoe-grok"]}
  ],
  observed:[
-  {v:"Top uses: practical guidance 28.3%, writing and editing 28.1%, seeking information 21.3% of messages.", src:"OpenAI study, consumer plans only, data to July 2025", c:"med"},
-  {v:"Writing is 42% of work-related messages. Programming is only 4.2% of all messages.", src:"OpenAI study via press", c:"med"}
+  {v:"Top uses: practical guidance 28.3%, writing and editing 28.1%, seeking information 21.3% of messages.", src:"OpenAI study, consumer plans only, data to July 2025", c:"med", r:["instantpress"]},
+  {v:"Writing is 42% of work-related messages. Programming is only 4.2% of all messages.", src:"OpenAI study via press", c:"med", r:["fortune"]}
  ], stated:[],
  power:{r:"near", good:["Largest reach. Most students already know it."], bad:["Share slipping to Gemini and Claude.","Atlas browser sunset within nine months of launch."]}
 },
 {
- id:"cowork", name:"Claude Cowork", vendor:"Anthropic", kind:"Desktop agent (files and connected apps)", group:"agents", tier:"t1", books:"Books 2 and 3",
+ id:"cowork", refs:["claude-conn","fastio","anthropic-ei"], name:"Claude Cowork", vendor:"Anthropic", kind:"Desktop agent (files and connected apps)", group:"agents", tier:"t1", books:"Books 2 and 3",
  free:false, entry:20, entryLabel:"$20/mo",
  pitch:"An agent in the Claude desktop app. It works in the folders you grant, uses connected apps, and asks before irreversible steps.",
  ladder:[
@@ -295,17 +310,17 @@ var TOOLS = [
  risks:["Real files, real consequences. A mistake can overwrite or delete.","Quota burn on a $20 plan is untested for our exercises. Run one real exercise before choosing a cost tier."],
  usage:[
   {k:"Active users", v:"Not published.", src:"-", c:"none"},
-  {k:"Research sample", v:"Anthropic analyzed 1.2M anonymized sessions. That is a sample size, not a user count.", src:"Anthropic, via press", c:"med"}
+  {k:"Research sample", v:"Anthropic analyzed 1.2M anonymized sessions. That is a sample size, not a user count.", src:"Anthropic, via press", c:"med", r:["howdoiuseai"]}
  ],
  observed:[
-  {v:"Data and spreadsheet work is over-represented in Cowork and especially autonomous.", src:"Anthropic Economic Index, June 2026", c:"high"},
-  {v:"33.4% of 1.2M sampled sessions were business process and operations: reports, onboarding checklists, reconciling spreadsheets.", src:"Anthropic data via a trade article", c:"med"}
+  {v:"Data and spreadsheet work is over-represented in Cowork and especially autonomous.", src:"Anthropic Economic Index, June 2026", c:"high", r:["anthropic-ei"]},
+  {v:"33.4% of 1.2M sampled sessions were business process and operations: reports, onboarding checklists, reconciling spreadsheets.", src:"Anthropic data via a trade article", c:"med", r:["howdoiuseai"]}
  ], stated:[],
  power:{r:"likely", good:["Early and well-regarded in the agent category.","Copilot Cowork runs on Anthropic models, which spreads the bet."], bad:["Usage limits bite on lower plans.","Smaller consumer footprint than its rivals."]},
  bias:"Cowork is the tool this course standardizes on, and it is made by the company that built this board. Run the same exercise in ChatGPT Work before locking the decision."
 },
 {
- id:"chatgpt-work", name:"ChatGPT Work", vendor:"OpenAI", kind:"Agent mode inside ChatGPT", group:"agents", tier:"t2", books:"Reading variant for Books 2 and 3",
+ id:"chatgpt-work", refs:["constellation","neuronfeed","kingy"], name:"ChatGPT Work", vendor:"OpenAI", kind:"Agent mode inside ChatGPT", group:"agents", tier:"t2", books:"Reading variant for Books 2 and 3",
  free:true, entry:20, entryLabel:"Free desktop, $20 web",
  pitch:"Longer multi-step jobs inside ChatGPT, with scheduled tasks and finished files.",
  ladder:[
@@ -321,7 +336,7 @@ var TOOLS = [
  power:{r:"near", good:["Largest consumer base to launch from."], bad:["Frequent product reshuffles (Atlas sunset, Dots launch on top)."]}
 },
 {
- id:"spark", name:"Gemini Spark", vendor:"Google", kind:"Cloud agent inside the Gemini app", group:"agents", tier:"t2", books:"Reading variant for Books 2 and 3",
+ id:"spark", refs:["gsupport-spark","gblog-spark","aal-spark"], name:"Gemini Spark", vendor:"Google", kind:"Cloud agent inside the Gemini app", group:"agents", tier:"t2", books:"Reading variant for Books 2 and 3",
  free:false, entry:19.99, entryLabel:"$19.99/mo",
  pitch:"An always-on agent that works across Gmail, Calendar, Drive, Docs, and Sheets, even when your laptop is closed.",
  ladder:[
@@ -335,13 +350,13 @@ var TOOLS = [
  risks:["Google labels it experimental and asks for your supervision.","Reviewers report context drift in long sessions."],
  usage:[
   {k:"Spark users", v:"Not published.", src:"-", c:"none"},
-  {k:"Gemini app", v:"950M monthly users (Q2 2026); Google later said 1B.", src:"Alphabet Q2 2026 call; Google blog", c:"high"}
+  {k:"Gemini app", v:"950M monthly users (Q2 2026); Google later said 1B.", src:"Alphabet Q2 2026 call; Google blog", c:"high", r:["alphabet","instantpress"]}
  ],
  observed:[], stated:["Summarize Gmail threads, build meeting briefs from calendar plus email, organize Drive, draft Docs, update Sheets."],
  power:{r:"near", good:["Google distribution and money.","Nearly 90% of the Fortune 100 use Gemini Enterprise."], bad:["Plan and region rules keep changing.","Pichai acknowledged gaps in agentic coding."]}
 },
 {
- id:"perplexity", name:"Perplexity Computer and Comet", vendor:"Perplexity", kind:"Research agent and AI browser", group:"agents", tier:"t2", books:"Reading variant (cited research)",
+ id:"perplexity", refs:["releasebot","dreaming"], name:"Perplexity Computer and Comet", vendor:"Perplexity", kind:"Research agent and AI browser", group:"agents", tier:"t2", books:"Reading variant (cited research)",
  free:true, entry:20, entryLabel:"Free browser, $20 agent",
  pitch:"A research-first agent that cites its sources, plus a free AI browser that acts across your open tabs.",
  ladder:[
@@ -353,16 +368,16 @@ var TOOLS = [
  controls:["Background agent controls and enterprise roles exist. Approval behavior was not verified here."],
  risks:["Depends on other labs' models.","Small and shrinking share of chatbot traffic."],
  usage:[
-  {k:"Web traffic share", v:"About 1.3% (May 2026), down from 2.0% in March.", src:"Similarweb via FatJoe", c:"med"},
-  {k:"US mobile daily share", v:"Fell from 6% (Oct 2025) to about 2%.", src:"Apptopia via FatJoe", c:"med"},
-  {k:"Revenue and value", v:"Annualized revenue $450M to $500M; valued at $22.6B.", src:"Trade press", c:"med"},
-  {k:"Monthly users", v:"About 45M.", src:"DemandSage", c:"low"}
+  {k:"Web traffic share", v:"About 1.3% (May 2026), down from 2.0% in March.", src:"Similarweb via FatJoe", c:"med", r:["fatjoe-pplx"]},
+  {k:"US mobile daily share", v:"Fell from 6% (Oct 2025) to about 2%.", src:"Apptopia via FatJoe", c:"med", r:["fatjoe-pplx"]},
+  {k:"Revenue and value", v:"Annualized revenue $450M to $500M; valued at $22.6B.", src:"Trade press", c:"med", r:["fatjoe-pplx"]},
+  {k:"Monthly users", v:"About 45M.", src:"DemandSage", c:"low", r:["instantpress"]}
  ],
- observed:[{v:"About 55% personal, 30% professional, 15% educational. Productivity and workflow is the largest topic, just over a third of queries.", src:"Cornell analysis, relayed secondhand", c:"med"}], stated:[],
+ observed:[{v:"About 55% personal, 30% professional, 15% educational. Productivity and workflow is the largest topic, just over a third of queries.", src:"Cornell analysis, relayed secondhand", c:"med", r:["fatjoe-pplx"]}], stated:[],
  power:{r:"unc", good:["Strong at sourced research. Computer reaches into Microsoft 365."], bad:["Small share; reliant on rivals' models; acquisition or pivot risk."]}
 },
 {
- id:"copilot-cowork", name:"Microsoft Copilot Cowork", vendor:"Microsoft", kind:"Enterprise agent in Microsoft 365", group:"agents", tier:"t4", books:"Enterprise fork only",
+ id:"copilot-cowork", refs:["ms-cowork-ga","neowin","xtended","panto"], name:"Microsoft Copilot Cowork", vendor:"Microsoft", kind:"Enterprise agent in Microsoft 365", group:"agents", tier:"t4", books:"Enterprise fork only",
  free:false, entry:30, entryLabel:"$30+ plus usage",
  pitch:"Long-running multi-tool tasks inside Microsoft 365, governed by IT. Not a fit for solopreneurs.",
  ladder:[
@@ -374,20 +389,20 @@ var TOOLS = [
  controls:["Admin budgets, spend limits, and usage reporting.","Stays inside Microsoft 365 permissions and compliance policies."],
  risks:["Variable credit billing is hard to forecast.","Overkill and unaffordable for the pilot audience."],
  usage:[
-  {k:"Paid Copilot seats", v:"30M+ (July 2026), up from 15M in January. This is Copilot overall, not Cowork.", src:"Microsoft, via XtendedView", c:"med"},
-  {k:"Copilot family", v:"150M+ active users.", src:"Microsoft, via XtendedView", c:"med"},
-  {k:"Chatbot web share", v:"2.8% worldwide, 7.95% in the US (Aug 2026).", src:"Web-traffic tracker via XtendedView", c:"med"},
+  {k:"Paid Copilot seats", v:"30M+ (July 2026), up from 15M in January. This is Copilot overall, not Cowork.", src:"Microsoft, via XtendedView", c:"med", r:["xtended","instantpress"]},
+  {k:"Copilot family", v:"150M+ active users.", src:"Microsoft, via XtendedView", c:"med", r:["xtended"]},
+  {k:"Chatbot web share", v:"2.8% worldwide, 7.95% in the US (Aug 2026).", src:"Web-traffic tracker via XtendedView", c:"med", r:["xtended"]},
   {k:"Cowork-specific", v:"Not published. Only a vague 'thousands of customers' claim.", src:"-", c:"none"}
  ],
  observed:[
-  {v:"Of 100,000+ chats: 49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", src:"Microsoft Work Trend Index, via Panto", c:"med"},
-  {v:"Daily use by app: Teams 34%, Outlook 33%, Word 25%.", src:"Government trial data, via Panto", c:"med"},
-  {v:"Why users lapsed: 44.2% distrust accuracy, 28.5% too much editing, 16% unclear use, 8.3% slow. The underlying study is unnamed.", src:"XtendedView", c:"low"}
+  {v:"Of 100,000+ chats: 49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", src:"Microsoft Work Trend Index, via Panto", c:"med", r:["panto"]},
+  {v:"Daily use by app: Teams 34%, Outlook 33%, Word 25%.", src:"Government trial data, via Panto", c:"med", r:["panto"]},
+  {v:"Why users lapsed: 44.2% distrust accuracy, 28.5% too much editing, 16% unclear use, 8.3% slow. The underlying study is unnamed.", src:"XtendedView", c:"low", r:["xtended"]}
  ], stated:["Named large deployments (seat counts, not usage): NHS England 505,000; Accenture 740,000+; KPMG 276,000+; HSBC 200,000."],
  power:{r:"near", good:["Enormous installed base (450M+ commercial seats)."], bad:["Cowork is a metered add-on and depends on Anthropic models."]}
 },
 {
- id:"grok-bot", name:"Grok Bot", vendor:"SpaceXAI (xAI, owned by SpaceX)", kind:"Persistent cloud agents ('Bots')", group:"agents", tier:"t3", books:"Reading variant and security case study",
+ id:"grok-bot", refs:["xai-docs","xai-teams","xai-procure","xai-support","xai-design","codersera","aitoolbox"], name:"Grok Bot", vendor:"SpaceXAI (xAI, owned by SpaceX)", kind:"Persistent cloud agents ('Bots')", group:"agents", tier:"t3", books:"Reading variant and security case study",
  free:false, entry:20, entryLabel:"$20 to $30/mo",
  pitch:"Named, always-on agents that each have a memory and a cloud computer, can be shared as Team Bots, and run on routines.",
  ladder:[
@@ -401,15 +416,15 @@ var TOOLS = [
  controls:["Allow once, Always allow, or Deny on proposed actions.","Auto Review: a model-based check with Ask first and Allow automatically rules. Ask first wins.","For passwords, two-factor codes, and payments you take over the Bot's computer.","Access to your own computer defaults to Ask every time."],
  risks:["All your Bots share one cloud computer. xAI says not to treat separate Bots as a security boundary.","Deleting a Bot does not remove its files or browser sessions.","Beta product. Broad Always allow rules are an easy mistake."],
  usage:[
-  {k:"Weekly users", v:"418,000 as of Sept 14, up 24% week over week. SpaceX did not comment.", src:"Bloomberg, via Briefs", c:"med"},
-  {k:"Grok chat", v:"117M monthly users (SpaceX filing, March 2026); third-party trackers said 50M.", src:"SpaceX IPO filing", c:"med"},
-  {k:"Web traffic share", v:"About 2.8%, flat since March.", src:"Similarweb via FatJoe", c:"med"}
+  {k:"Weekly users", v:"418,000 as of Sept 14, up 24% week over week. SpaceX did not comment.", src:"Bloomberg, via Briefs", c:"med", r:["briefs","bloomberg"]},
+  {k:"Grok chat", v:"117M monthly users (SpaceX filing, March 2026); third-party trackers said 50M.", src:"SpaceX IPO filing", c:"med", r:["fatjoe-grok","aibw-grok"]},
+  {k:"Web traffic share", v:"About 2.8%, flat since March.", src:"Similarweb via FatJoe", c:"med", r:["fatjoe-grok"]}
  ],
  observed:[], stated:["Vendor case studies, self-reported: procurement found $85,662 a year in unused SaaS seats; support handled 175% more tickets with no new hires at $0.20 to $0.30 each; a small-business insurer says it recovered $120,000 for customers."],
  power:{r:"unc", good:["SpaceX capital and a $60B Cursor acquisition behind an enterprise push."], bad:["Revenue reported near $500M against about $1B monthly burn (single secondary source).","Co-founders departed; compliance certifications less mature; deepfake investigations in several countries."]}
 },
 {
- id:"muse", name:"Meta Muse", vendor:"Meta", kind:"Personal agent (app, web, WhatsApp)", group:"agents", tier:"t3", books:"Reading variant and security case study",
+ id:"muse", refs:["aal-muse","channelnews","forbes-muse","tc-muse"], name:"Meta Muse", vendor:"Meta", kind:"Personal agent (app, web, WhatsApp)", group:"agents", tier:"t3", books:"Reading variant and security case study",
  free:true, entry:0, entryLabel:"Free (card required)",
  pitch:"A consumer agent with its own secure cloud computer that books, shops, fills forms, and keeps working after you close the app.",
  ladder:[
@@ -421,15 +436,15 @@ var TOOLS = [
  controls:["Approval cards before it sends, buys, or shares.","A separate Sentinel agent reviews actions before they reach the internet.","Runs in an isolated VM; logins are stored where Muse cannot read them.","Purchases use one-time card numbers (Link by Stripe)."],
  risks:["Your conversations train Meta's models by default. Opt out in settings.","A Mac app flaw was published Sept 21 and patched in about a day.","Amazon blocked Muse from its store on Sept 20 to 21.","Meta says prompt injection is still unsolved. Reuters reported the launch slipped over internal testing concerns."],
  usage:[
-  {k:"Downloads", v:"5M US downloads in 22 days. ChatGPT took 56 days; Grok 103; Claude 492.", src:"Sensor Tower via Forbes", c:"med"},
-  {k:"Daily users", v:"About 642,000 US mobile daily users around day 12, versus 231,000 for ChatGPT at the same point.", src:"Apptopia estimate via TechCrunch", c:"med"},
-  {k:"Retention", v:"Unknown. Skeptics call early numbers curiosity-driven, helped by heavy Meta promotion.", src:"Forbes", c:"low"}
+  {k:"Downloads", v:"5M US downloads in 22 days. ChatGPT took 56 days; Grok 103; Claude 492.", src:"Sensor Tower via Forbes", c:"med", r:["forbes-muse"]},
+  {k:"Daily users", v:"About 642,000 US mobile daily users around day 12, versus 231,000 for ChatGPT at the same point.", src:"Apptopia estimate via TechCrunch", c:"med", r:["tc-muse"]},
+  {k:"Retention", v:"Unknown. Skeptics call early numbers curiosity-driven, helped by heavy Meta promotion.", src:"Forbes", c:"low", r:["forbes-muse"]}
  ],
  observed:[], stated:["Research, bookings, forms, email, shopping, goal tracking. The small-business version targets advertising, sales, social media, finance, creative work, and customer messages."],
  power:{r:"unp", good:["Meta's distribution, especially WhatsApp. The company itself is not going anywhere."], bad:["Brand new, unproven retention, trust concerns, and retailer blocks."]}
 },
 {
- id:"dots", name:"OpenAI Dots", vendor:"OpenAI", kind:"Always-on agent inside ChatGPT", group:"watch", tier:"tw", books:"Watchlist (fails the cost gate)",
+ id:"dots", refs:["marktechpost","usecarly","techinsider-dots"], name:"OpenAI Dots", vendor:"OpenAI", kind:"Always-on agent inside ChatGPT", group:"watch", tier:"tw", books:"Watchlist (fails the cost gate)",
  free:false, entry:100, entryLabel:"$100+/mo",
  pitch:"OpenAI's answer to Muse, launched Sept 29: persistent agents with their own cloud computer and 4,000+ app connections.",
  ladder:[
@@ -445,7 +460,7 @@ var TOOLS = [
  power:{r:"near", good:["OpenAI behind it."], bad:["Product unproven. Reportedly follows OpenClaw, whose founder joined OpenAI (The Register)."]}
 },
 {
- id:"instinct", name:"Instinct", vendor:"Instinct", kind:"Consumer personal agent", group:"watch", tier:"tw", books:"Watchlist",
+ id:"instinct", refs:["marktechpost"], name:"Instinct", vendor:"Instinct", kind:"Consumer personal agent", group:"watch", tier:"tw", books:"Watchlist",
  free:false, entry:null, entryLabel:"Invite-only",
  pitch:"A viral consumer agent known for phone-call concierge tasks and agent-to-agent planning with friends.",
  ladder:[{n:"Invite-only", p:"-", d:"No public pricing found.", entry:true}],
@@ -456,26 +471,26 @@ var TOOLS = [
  power:{r:"unp", good:["Well funded."], bad:["Invite-only and unproven."]}
 },
 {
- id:"jev", name:"Jev (TypeSafe AI)", vendor:"TypeSafe AI", kind:"Developer decision model (infrastructure)", group:"watch", tier:"tw", books:"Concept for Book 3, not a student tool",
+ id:"jev", refs:["vb-jev","beam-jev"], name:"Jev (TypeSafe AI)", vendor:"TypeSafe AI", kind:"Developer decision model (infrastructure)", group:"watch", tier:"tw", books:"Concept for Book 3, not a student tool",
  free:false, entry:null, entryLabel:"API only",
  pitch:"Returns typed decisions and scores in milliseconds instead of writing text. Used by developers to gate agent actions.",
  ladder:[{n:"API", p:"$0.042 or $0.42", d:"Per million input tokens. VentureBeat and the vendor site disagree by 10x.", entry:true}],
  access:["Developer API and MCP server. Launched Sept 15, 2026."],
  controls:["Used by others to gate agent actions, for example in LangChain middleware."],
  risks:["VentureBeat reports that prompt injection can influence its verdicts."],
- usage:[{k:"Early adoption", v:"140,000 waitlist sign-ups cleared in 36 hours; about 13% of Vercel's paid AI Gateway teams in 24 hours.", src:"VentureBeat", c:"med"}],
+ usage:[{k:"Early adoption", v:"140,000 waitlist sign-ups cleared in 36 hours; about 13% of Vercel's paid AI Gateway teams in 24 hours.", src:"VentureBeat", c:"med", r:["vb-jev"]}],
  observed:[], stated:["Tool selection, routing, classification, scoring, guardrails."],
  power:{r:"unp", good:["Fast early uptake."], bad:["Brand new; narrow purpose."]}
 },
 {
- id:"openclaw", name:"OpenClaw and Hermes Agent", vendor:"Open source", kind:"Self-hosted open-source agents", group:"watch", tier:"tw", books:"Security lesson only",
+ id:"openclaw", refs:["csa","composio"], name:"OpenClaw and Hermes Agent", vendor:"Open source", kind:"Self-hosted open-source agents", group:"watch", tier:"tw", books:"Security lesson only",
  free:true, entry:0, entryLabel:"Free (self-hosted)",
  pitch:"Free agents you run yourself. Powerful, and the clearest example of what unsafe defaults look like.",
  ladder:[{n:"Software", p:"$0", d:"Plus your own hosting and model costs.", entry:true}],
  access:["Self-hosted. A hardened setup takes 30 to 60 minutes (one source)."],
  controls:["Whatever you configure yourself."],
  risks:["OpenClaw disclosed 9 vulnerabilities in four days in March 2026, one rated 9.9.","Singapore's cybersecurity agency advises against installing the open-source version on devices with sensitive data."],
- usage:[{k:"Popularity", v:"OpenClaw passed 347,000 GitHub stars by April 2026. Stars are interest, not users.", src:"Trade press", c:"med"}],
+ usage:[{k:"Popularity", v:"OpenClaw passed 347,000 GitHub stars by April 2026. Stars are interest, not users.", src:"Trade press", c:"med", r:["composio"]}],
  observed:[], stated:["Personal automation for technical users. Meta's Muse is modeled on OpenClaw."],
  power:{r:"likely", good:["Large, active communities."], bad:["Security record; not for beginners."]}
 }
@@ -485,58 +500,103 @@ var RATE = {near:["Near-certain","rate-near"], likely:["Likely","rate-likely"], 
 
 /* chart data: latest reported users, definitions differ */
 var REACH = [
- {n:"ChatGPT", hi:1000, lo:900, label:"900M to 1B weekly", src:"OpenAI statements (Feb and Aug 2026)", c:"med"},
- {n:"Gemini app", hi:1000, lo:950, label:"950M to 1B monthly", src:"Alphabet Q2 call; Google blog (Aug 2026)", c:"high"},
- {n:"Meta AI", hi:1000, lo:1000, label:"1B monthly across Meta apps", src:"Meta statement, 2025", c:"low"},
- {n:"Claude", hi:245, lo:56, label:"56M to 245M monthly", src:"Sensor Tower and another tracker disagree", c:"med"},
- {n:"Copilot family", hi:150, lo:150, label:"150M+ active", src:"Microsoft via XtendedView (30M+ paid seats)", c:"med"},
- {n:"Grok", hi:117, lo:50, label:"50M to 117M monthly", src:"Third-party versus SpaceX filing (Mar 2026)", c:"med"},
- {n:"Perplexity", hi:45, lo:45, label:"About 45M monthly", src:"DemandSage", c:"low"}
+ {n:"ChatGPT", hi:1000, lo:900, label:"900M to 1B weekly", src:"OpenAI statements (Feb and Aug 2026)", c:"med", r:["techchecker","techinsider-chatgpt"]},
+ {n:"Gemini app", hi:1000, lo:950, label:"950M to 1B monthly", src:"Alphabet Q2 call; Google blog (Aug 2026)", c:"high", r:["alphabet","instantpress"]},
+ {n:"Meta AI", hi:1000, lo:1000, label:"1B monthly across Meta apps", src:"Meta statement, 2025", c:"low", r:["instantpress"]},
+ {n:"Claude", hi:245, lo:56, label:"56M to 245M monthly", src:"Sensor Tower and another tracker disagree", c:"med", r:["devstory","techinsider-chatgpt"]},
+ {n:"Copilot family", hi:150, lo:150, label:"150M+ active", src:"Microsoft via XtendedView (30M+ paid seats)", c:"med", r:["xtended","panto"]},
+ {n:"Grok", hi:117, lo:50, label:"50M to 117M monthly", src:"Third-party versus SpaceX filing (Mar 2026)", c:"med", r:["fatjoe-grok","aibw-grok"]},
+ {n:"Perplexity", hi:45, lo:45, label:"About 45M monthly", src:"DemandSage", c:"low", r:["instantpress"]}
 ];
 
 var AGENT_SIGNALS = [
- {t:"Grok Bot", v:"418,000 weekly users (Sept 14), +24% week over week", s:"Bloomberg via Briefs. SpaceX did not comment.", c:"med"},
- {t:"Meta Muse", v:"5M US downloads in 22 days; about 642,000 US mobile daily users near day 12", s:"Sensor Tower via Forbes; Apptopia via TechCrunch. Retention unknown.", c:"med"},
- {t:"Claude Cowork", v:"Not published. 1.2M sessions were sampled by Anthropic.", s:"A sample, not a user count.", c:"none"},
+ {t:"Grok Bot", v:"418,000 weekly users (Sept 14), +24% week over week", s:"Bloomberg via Briefs. SpaceX did not comment.", c:"med", r:["briefs","bloomberg"]},
+ {t:"Meta Muse", v:"5M US downloads in 22 days; about 642,000 US mobile daily users near day 12", s:"Sensor Tower via Forbes; Apptopia via TechCrunch. Retention unknown.", c:"med", r:["forbes-muse","tc-muse"]},
+ {t:"Claude Cowork", v:"Not published. 1.2M sessions were sampled by Anthropic.", s:"A sample, not a user count.", c:"none", r:["howdoiuseai"]},
  {t:"ChatGPT Work, Gemini Spark, Copilot Cowork, Dots", v:"Not published", s:"Parent-platform reach only.", c:"none"}
 ];
 
 var WORKMIX = [
- {t:"ChatGPT", v:"Practical guidance 28.3%, writing and editing 28.1%, information 21.3%. Programming 4.2% of messages.", b:"OpenAI study, consumer plans, data to July 2025", c:"med"},
- {t:"Claude", v:"Work 43%, personal 40%, coursework 16%. Computer and mathematical tasks lead at 23.8%.", b:"Anthropic Economic Index, May 2026 snapshot", c:"med"},
- {t:"Claude Cowork", v:"Data and spreadsheet work over-represented. 33.4% of sampled sessions were business process and operations.", b:"Anthropic Economic Index, June 2026; trade article", c:"high"},
- {t:"Copilot", v:"49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", b:"Microsoft Work Trend Index via Panto", c:"med"},
- {t:"Perplexity", v:"55% personal, 30% professional, 15% educational. Productivity and workflow is the top topic.", b:"Cornell study via FatJoe", c:"med"},
+ {t:"ChatGPT", v:"Practical guidance 28.3%, writing and editing 28.1%, information 21.3%. Programming 4.2% of messages.", b:"OpenAI study, consumer plans, data to July 2025", c:"med", r:["instantpress","fortune"]},
+ {t:"Claude", v:"Work 43%, personal 40%, coursework 16%. Computer and mathematical tasks lead at 23.8%.", b:"Anthropic Economic Index, May 2026 snapshot", c:"med", r:["gptinsights"]},
+ {t:"Claude Cowork", v:"Data and spreadsheet work over-represented. 33.4% of sampled sessions were business process and operations.", b:"Anthropic Economic Index, June 2026; trade article", c:"high", r:["anthropic-ei","howdoiuseai"]},
+ {t:"Copilot", v:"49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", b:"Microsoft Work Trend Index via Panto", c:"med", r:["panto"]},
+ {t:"Perplexity", v:"55% personal, 30% professional, 15% educational. Productivity and workflow is the top topic.", b:"Cornell study via FatJoe", c:"med", r:["fatjoe-pplx"]},
  {t:"Gemini, Spark, Grok Bot, Muse, Dots", v:"No observed mix published. Only vendor-stated uses.", b:"-", c:"none"}
 ];
 
 var INDUSTRY = [
- {s:"Information", firm:"49.0%", note:"US firms using AI in the two weeks to Sept 6, 2026 (Census)."},
- {s:"Professional and technical services", firm:"43.9%", note:"Same Census reading."},
- {s:"Finance and insurance", firm:"41.0%", note:"Workers: 77% use AI at least occasionally, 22% daily (HP survey, Feb 2026). One source says 95% of UK insurers used AI in 2024."},
- {s:"Health care", firm:"24.7%", note:"Census, Aug 2026. Large-enterprise surveys report 58% to 62%. Workers: 45% occasional, 18% daily."},
- {s:"All US firms", firm:"23.8%", note:"A different Census cycle shows 23.2%. Most small firms are not using AI yet."},
- {s:"Marketing (a department, not an industry)", firm:"48% to 75%", note:"Sources disagree: 48% in one, 70% to 75% in another."}
+ {s:"Information", firm:"49.0%", note:"US firms using AI in the two weeks to Sept 6, 2026 (Census).", r:["st-industry"]},
+ {s:"Professional and technical services", firm:"43.9%", note:"Same Census reading.", r:["st-industry"]},
+ {s:"Finance and insurance", firm:"41.0%", note:"Workers: 77% use AI at least occasionally, 22% daily (HP survey, Feb 2026). One source says 95% of UK insurers used AI in 2024.", r:["st-industry","aifwd"]},
+ {s:"Health care", firm:"24.7%", note:"Census, Aug 2026. Large-enterprise surveys report 58% to 62%. Workers: 45% occasional, 18% daily.", r:["st-enterprise","aifwd"]},
+ {s:"All US firms", firm:"23.8%", note:"A different Census cycle shows 23.2%. Most small firms are not using AI yet.", r:["st-industry","st-enterprise","st-llm"]},
+ {s:"Marketing (a department, not an industry)", firm:"48% to 75%", note:"Sources disagree: 48% in one, 70% to 75% in another.", r:["medha","aifwd"]}
 ];
 
-var SOURCES = [
- {n:"SecondTalent: Gemini statistics (Sept 2026)", g:"A", w:"Gemini reach, enterprise, pricing. Traces figures to Alphabet earnings."},
- {n:"Alphabet Q2 2026 earnings transcript", g:"A", w:"Primary source: 950M app users, Fortune 100, SMB creative use."},
- {n:"Instant Press AI statistics", g:"A", w:"Named, dated sources. Good cross-platform summary."},
- {n:"Panto: Microsoft Copilot statistics", g:"A", w:"Quotes Microsoft's own studies."},
- {n:"x.ai pages (Grok Bot docs, procurement, support, Team Bots, design)", g:"A", w:"First-party facts. Outcome claims are self-reported, so treat as vendor-stated."},
- {n:"Forbes and TechCrunch on Muse", g:"A", w:"Cite Sensor Tower and Apptopia estimates. Downloads are not retention."},
- {n:"Briefs (Bloomberg report on Grok Bot)", g:"B", w:"Single-outlet, anonymous attendees, unconfirmed by SpaceX."},
- {n:"AI Agents Library (Muse and Spark guides)", g:"B", w:"Detailed and cites Meta and Google, but the site sells training and skills."},
- {n:"XtendedView: Copilot statistics", g:"B", w:"Useful, but studies are often unnamed."},
- {n:"FatJoe: Grok and Perplexity stats", g:"B", w:"Secondary roundups of Similarweb and Apptopia data."},
- {n:"AI Business Weekly: Grok statistics", g:"B", w:"Compiles SpaceX filing figures; finances come from one secondary source."},
- {n:"Business of Apps: Gemini statistics", g:"Drop", w:"2025 data (47M users). Obsolete."},
- {n:"ElectroIQ: Gemini statistics", g:"Drop", w:"Dec 2025 and contains unsourced claims."},
- {n:"Zebracat: Perplexity statistics", g:"Drop", w:"Sept 2025, unsourced, contradicts newer data."},
- {n:"ivee: Gemini Spark review", g:"Drop", w:"June 2026. Still says Spark is Ultra-only."},
- {n:"Bloomberg and Seeking Alpha pages", g:"n/a", w:"Block automated access. The Bloomberg figure was read through Briefs."}
-];
+var REFS = {
+ "alphabet":{name:"Alphabet Q2 2026 earnings call transcript", url:"https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx", grade:"A", note:"Primary source: Gemini app users, Gemini Enterprise reach, SMB creative use."},
+ "st-gemini":{name:"SecondTalent: Google Gemini statistics (Sept 2026)", url:"https://www.secondtalent.com/resources/google-gemini-statistics/", grade:"A", note:"Gemini reach and pricing; time-per-user figures from Sensor Tower."},
+ "instantpress":{name:"Instant Press: AI and ChatGPT statistics", url:"https://www.instantpress.co/ai-statistics", grade:"A", note:"Named, dated sources across platforms."},
+ "panto":{name:"Panto: Microsoft Copilot statistics", url:"https://www.getpanto.ai/blog/microsoft-copilot-statistics", grade:"A", note:"Quotes Microsoft's own studies and Work Trend Index."},
+ "xai-docs":{name:"SpaceXAI docs: Grok Bot approvals, security, and privacy", url:"https://docs.x.ai/grok-bot/approvals-security-and-privacy", grade:"A", note:"First-party controls and data settings."},
+ "xai-procure":{name:"SpaceXAI: Setting Grok Bot loose on procurement", url:"https://x.ai/news/grok-bot-procurement", grade:"A", note:"First-party case study. Outcomes are self-reported."},
+ "xai-design":{name:"SpaceXAI: Designing Grok Bot", url:"https://x.ai/news/designing-grok-bot", grade:"A", note:"First-party product design and limits."},
+ "xai-teams":{name:"SpaceXAI: Team Bots", url:"https://x.ai/news/team-bots", grade:"A", note:"First-party launch post, including the insurer example."},
+ "xai-support":{name:"SpaceXAI: Scaling customer support with Grok Bot", url:"https://x.ai/news/grok-bot-customer-support", grade:"A", note:"First-party case study. Outcomes are self-reported."},
+ "forbes-muse":{name:"Forbes: Muse hits 5 million downloads", url:"https://www.forbes.com/sites/maryroeloffs/2026/09/30/metas-muse-ai-assistant-hits-5-million-downloads-outpacing-growth-of-chatgpt-grok-and-claude/", grade:"A", note:"Cites Sensor Tower. Downloads are not retention."},
+ "tc-muse":{name:"TechCrunch: Muse outpacing ChatGPT's early mobile launch", url:"https://techcrunch.com/2026/09/21/metas-muse-is-outpacing-chatgpts-early-mobile-launch/", grade:"A", note:"Cites Apptopia estimates."},
+ "anthropic-ei":{name:"Anthropic Economic Index report (June 2026)", url:"https://www.anthropic.com/research/economic-index-june-2026-report", grade:"A", note:"First-party analysis of how Claude, Cowork, and Claude Code are used."},
+ "claude-conn":{name:"Claude Help Center: connectors", url:"https://support.claude.com/en/articles/11176164", grade:"A", note:"First-party connector availability."},
+ "ms-cowork-ga":{name:"Microsoft: Copilot Cowork is now generally available", url:"https://microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available", grade:"A", note:"First-party: license requirement and models at launch."},
+ "gsupport-spark":{name:"Gemini Apps Help: Use Gemini Spark", url:"https://support.google.com/gemini/answer/17094507", grade:"A", note:"First-party Spark requirements and risks."},
+ "gblog-spark":{name:"Google blog: the Gemini app becomes more agentic", url:"https://blog.google/innovation-and-ai/products/gemini-app/next-evolution-gemini-app/", grade:"A", note:"First-party Spark announcement."},
+ "vb-jev":{name:"VentureBeat: Companies are putting Jev in charge of agent decisions", url:"https://venturebeat.com/security/companies-are-putting-jev-in-charge-of-ai-agent-decisions-and-prompt-injection-can-influence-the-verdict", grade:"A", note:"Adoption figures, pricing, and the prompt-injection caveat."},
+ "csa":{name:"Singapore CSA: Advisory on cybersecurity risks of OpenClaw", url:"https://www.csa.gov.sg/alerts-and-advisories/advisories/ad-2026-005/", grade:"A", note:"Government advisory on open-source agent risk."},
+ "fortune":{name:"Fortune: OpenAI and Anthropic usage studies", url:"https://dc.fortune.com/2025/09/15/openai-chatgpt-claude-anthropic-work-personal-use-new-data", grade:"A", note:"Press coverage of OpenAI's consumer usage study."},
+ "briefs":{name:"Briefs: Grok Bot racks up 418,000 weekly users", url:"https://www.briefs.co/news/grok-bot-racks-up-418-000-weekly-users-roughly-a-month-after/", grade:"B", note:"Single-outlet relay of a Bloomberg report. SpaceX did not comment."},
+ "xtended":{name:"XtendedView: Microsoft Copilot statistics", url:"https://xtendedview.com/microsoft-copilot-statistics/", grade:"B", note:"Useful roundup. Some studies are unnamed."},
+ "fatjoe-grok":{name:"FatJoe: Grok AI stats (July 2026)", url:"https://fatjoe.com/blog/grok-ai-stats/", grade:"B", note:"Secondary roundup of the SpaceX filing, Similarweb, and Apptopia."},
+ "aibw-grok":{name:"AI Business Weekly: Grok AI statistics", url:"https://aibusinessweekly.net/p/grok-ai-statistics", grade:"B", note:"Compiles the SpaceX filing; finances come from one secondary source."},
+ "fatjoe-pplx":{name:"FatJoe: Perplexity AI stats (July 2026)", url:"https://fatjoe.com/blog/perplexity-ai-stats/", grade:"B", note:"Secondary roundup of Similarweb data and a Cornell study."},
+ "aal-muse":{name:"AI Agents Library: Meta Muse guide", url:"https://www.aiagentslibrary.com/blog/meta-muse-ai/", grade:"B", note:"Detailed and cites Meta, but the site sells training and skills."},
+ "aal-spark":{name:"AI Agents Library: Gemini Spark availability", url:"https://www.aiagentslibrary.com/blog/gemini-spark-availability/", grade:"B", note:"Detailed and cites Google, but the site sells training and skills."},
+ "channelnews":{name:"ChannelNews: Meta's Muse agent can send emails and make payments", url:"https://www.channelnews.com.au/metas-new-muse-ai-agent-can-send-emails-make-payments-shop/", grade:"B", note:"Relays a Reuters report that the launch was delayed."},
+ "fastio":{name:"Fast.io: Claude Cowork features overview", url:"https://fast.io/resources/claude-cowork-features-overview/", grade:"B", note:"Folder-scoped access, sandbox, and connectors."},
+ "neowin":{name:"Neowin: Copilot Cowork usage-based billing", url:"https://www.neowin.net/news/microsofts-copilot-cowork-now-generally-available-with-usage-based-billing/", grade:"B", note:"Credit pricing and license requirement."},
+ "rgb":{name:"rgb.ir: Gemini Notebook plan limits", url:"https://rgb.ir/en/ai/notebooklm/", grade:"B", note:"Free plan limits, citing Google pages."},
+ "prosper":{name:"Prosper: NotebookLM is now Gemini Notebook", url:"https://prosperinai.substack.com/p/gemini-notebook-claude-study-system", grade:"B", note:"Rename date (July 16, 2026)."},
+ "constellation":{name:"Constellation Research: ChatGPT Work launch", url:"https://www.constellationr.com/index%2Ephp/insights/news/openai-launches-chatgpt-work-rolls-out-gpt-56-model-family", grade:"B", note:"Launch details and plans."},
+ "neuronfeed":{name:"NeuronFeed: ChatGPT Work for autonomous workplace tasks", url:"https://neuronfeed.com/news/openai-launches-chatgpt-work-for-autonomous-workplace-tasks", grade:"B", note:"Connectors, scheduled tasks, desktop access."},
+ "kingy":{name:"Kingy: ChatGPT Work availability and pricing", url:"https://kingy.ai/?p=923188", grade:"B", note:"Plan availability and shared Codex credits."},
+ "marktechpost":{name:"MarkTechPost: OpenAI launches dots", url:"https://www.marktechpost.com/2026/09/29/openai-launches-dots-always-on-gpt-6-astra-agents-that-work-from-their-own-cloud-computers/", grade:"B", note:"Dots features, plans, and Instinct comparison."},
+ "usecarly":{name:"Carly: AI news, Sept 29 (OpenAI dots)", url:"https://www.usecarly.com/blog/ai-news-2026-09-29-evening/", grade:"B", note:"Dots pricing and plan availability."},
+ "techinsider-dots":{name:"Tech-Insider: OpenAI Dots pricing versus Muse", url:"https://tech-insider.org/openai-dots-pricing-vs-meta-muse-2026/", grade:"B", note:"Pro 500 tier and rollout."},
+ "beam-jev":{name:"Beam: Jev by TypeSafe", url:"https://beam.ai/agentic-insights/jev-typesafe-ai-agents", grade:"B", note:"What Jev is and is not."},
+ "composio":{name:"Composio: Hermes Agent alternatives", url:"https://composio.dev/blog/hermes-agent-alternatives", grade:"B", note:"OpenClaw vulnerabilities and popularity."},
+ "releasebot":{name:"Releasebot: Perplexity release notes", url:"https://releasebot.io/updates/perplexity-ai", grade:"B", note:"Computer, Personal Computer, and Microsoft 365 integration."},
+ "dreaming":{name:"Dreaming Press: best personal AI agents (Sept 2026)", url:"https://dreaming.press/posts/best-ai-agents-for-personal-use-september-2026.html", grade:"B", note:"Comet is free on all platforms."},
+ "codersera":{name:"Codersera: Grok Bot complete guide", url:"https://codersera.com/blog/grok-bot-complete-guide-2026/", grade:"B", note:"Grok Bot access via Cursor plans or SuperGrok."},
+ "aitoolbox":{name:"AI Toolbox: Grok pricing 2026", url:"https://www.ai-toolbox.co/grok-models/grok-pricing-plans-api-2026", grade:"B", note:"SuperGrok tiers and prices."},
+ "st-industry":{name:"SecondTalent: AI adoption by industry", url:"https://www.secondtalent.com/resources/industries-seeing-the-fastest-ai-adoption-rates/", grade:"B", note:"Census BTOS readings by sector."},
+ "st-enterprise":{name:"SecondTalent: AI adoption in enterprise", url:"https://www.secondtalent.com/resources/ai-adoption-in-enterprise-statistics/", grade:"B", note:"Census August reading and worker surveys."},
+ "st-llm":{name:"SecondTalent: generative AI and LLM usage statistics", url:"https://www.secondtalent.com/resources/domain-generative-ai-llm-usage-statistics/", grade:"B", note:"Similarweb August update, Pew, and Census figures."},
+ "aifwd":{name:"AIFWD: AI adoption report 2026", url:"https://aifwd.net/blog/ai-adoption-report-2026/", grade:"B", note:"HP worker survey by industry and department."},
+ "medha":{name:"Medha Cloud: AI adoption statistics 2026", url:"https://medhacloud.com/blog/ai-adoption-statistics-2026", grade:"B", note:"Department-level adoption."},
+ "gptinsights":{name:"GPT-Insights: Claude users and usage", url:"https://gpt-insights.de/en/geo-wiki/claude-users-usage/", grade:"B", note:"Restates Anthropic Economic Index figures (May 2026 snapshot)."},
+ "devstory":{name:"The Developer Story: ChatGPT keeps the most users", url:"https://thedeveloperstory.com/2026/06/12/chatgpt-keeps-the-most-users-while-gemini-and-claude-eat-its-share/", grade:"B", note:"Sensor Tower user estimates."},
+ "techinsider-chatgpt":{name:"Tech-Insider: ChatGPT hits 1 billion users", url:"https://tech-insider.org/ca/chatgpt-1-billion-users-2026/", grade:"B", note:"OpenAI weekly figures and rival app estimates."},
+ "techchecker":{name:"TechnologyChecker: ChatGPT statistics", url:"https://technologychecker.io/blog/chatgpt-statistics", grade:"B", note:"900M weekly users, confirmed by OpenAI in Feb 2026."},
+ "aibw-share":{name:"AI Business Weekly: AI market share 2026", url:"https://aibusinessweekly.net/p/ai-market-share-2026", grade:"B", note:"Cross-platform user and share estimates."},
+ "sqmag":{name:"SQ Magazine: Claude versus ChatGPT statistics", url:"https://sqmagazine.co.uk/claude-vs-chatgpt-statistics/", grade:"B", note:"Notes that Anthropic publishes no user total."},
+ "howdoiuseai":{name:"HowDoIUseAI: ChatGPT Work vs Claude Cowork vs Gemini Spark", url:null, grade:"B", note:"Source of the 1.2M Cowork session sample. The link was truncated in search results, so no stable URL was captured."},
+ "bloomberg":{name:"Bloomberg: Grok Bot tops 400,000 users", url:"https://www.bloomberg.com/news/articles/2026-09-22/spacexai-s-grok-bot-agent-tops-400-000-users-after-first-month", grade:"Not read", note:"Blocks automated access. Read through the Briefs summary."},
+ "seekingalpha":{name:"Seeking Alpha: Grok Bot surpasses 400K users", url:"https://seekingalpha.com/news/4645536-spacexais-grok-bot-agent-surpasses-400k-users-in-first-month-report", grade:"Not read", note:"Blocks automated access."},
+ "boa-gemini":{name:"Business of Apps: Gemini statistics", url:"https://www.businessofapps.com/data/google-gemini-statistics/", grade:"Drop", note:"2025 data (47M users). Obsolete."},
+ "electroiq":{name:"ElectroIQ: Gemini statistics", url:"https://electroiq.com/stats/google-gemini-ai-statistics/", grade:"Drop", note:"Dec 2025, with unsourced claims."},
+ "zebracat":{name:"Zebracat: Perplexity user statistics", url:"https://www.zebracat.ai/post/perplexity-ai-user-statistics", grade:"Drop", note:"Sept 2025, unsourced, contradicts newer data."},
+ "ivee":{name:"ivee: Gemini Spark review", url:"https://ivee.jobs/blog/gemini-spark-review", grade:"Drop", note:"June 2026. Still says Spark is Ultra-only."}
+};
 
 var GAPS = [
  ["Real usage for Cowork, ChatGPT Work, Spark, Dots, and Copilot Cowork","Not published. The board shows 'Not published' rather than guessing."],
@@ -574,7 +634,28 @@ COSTPICKS.forEach(function(p){state.cost.picks[p.id]=p.on;});
 /* ---------- HELPERS ---------- */
 function $(s,el){return (el||document).querySelector(s);}
 function byId(id){return TOOLS.filter(function(t){return t.id===id;})[0];}
-function conf(c){return '<span class="conf conf-'+c+'">'+CONF[c]+'</span>';}
+function conf(c, refs){
+  if(refs && refs.length){
+    return '<button type="button" class="conf conf-'+c+' has-src" data-refs="'+refs.join(",")+'" aria-label="'+CONF[c]+' confidence. Show sources.">'+CONF[c]+'</button>';
+  }
+  return '<span class="conf conf-'+c+'">'+CONF[c]+'</span>';
+}
+function refItem(id){
+  var r=REFS[id]; if(!r) return "";
+  return '<li><span>'+(r.url?'<a href="'+r.url+'" target="_blank" rel="noopener noreferrer">'+r.name+'</a>':r.name+' (no link captured)')+'</span><span class="g">Grade '+r.grade+'</span></li>';
+}
+function refList(ids){ return '<ul class="srcs">'+ids.map(refItem).join("")+'</ul>'; }
+function srcInline(ids){
+  return ids.filter(function(id){return REFS[id];}).map(function(id){var r=REFS[id]; return r.url?'<a href="'+r.url+'" target="_blank" rel="noopener noreferrer">'+r.name+'</a>':r.name;}).join(", ");
+}
+function toolRefs(t){
+  var out=[];
+  function add(id){ if(out.indexOf(id)<0) out.push(id); }
+  (t.refs||[]).forEach(add);
+  t.usage.forEach(function(u){(u.r||[]).forEach(add);});
+  t.observed.forEach(function(o){(o.r||[]).forEach(add);});
+  return out;
+}
 function money(n){return "$"+(Math.round(n*100)/100).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});}
 function li(arr){return arr.length? '<ul class="list">'+arr.map(function(x){return "<li>"+x+"</li>";}).join("")+"</ul>" : '<p class="hint">Nothing published.</p>';}
 function passes(t){
@@ -621,11 +702,11 @@ function profileHTML(t){
   h+='<section class="sec"><h3>Who can use it</h3>'+li(t.access)+'</section>';
   h+='<section class="sec"><div class="two"><div><h3>Built-in controls</h3>'+'<div class="list good">'+li(t.controls)+'</div></div><div><h3>Watch for</h3><div class="list bad">'+li(t.risks)+'</div></div></div></section>';
   h+='<section class="sec"><h3>Usage</h3><p class="hint">Each figure shows its source and how much to trust it. Different measures (weekly, monthly, downloads) are not interchangeable.</p><div class="tbl-wrap"><table><thead><tr><th>Measure</th><th>Figure</th><th>Source</th><th>Confidence</th></tr></thead><tbody>'+
-    t.usage.map(function(u){return "<tr><td>"+u.k+"</td><td>"+u.v+"</td><td>"+u.src+"</td><td>"+conf(u.c)+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+    t.usage.map(function(u){return "<tr><td>"+u.k+"</td><td>"+u.v+"</td><td>"+u.src+"</td><td>"+conf(u.c,u.r)+"</td></tr>";}).join("")+"</tbody></table></div></section>";
   h+='<section class="sec"><h3>What people do with it</h3>';
   if(t.observed.length){
     h+='<p class="sub-h">Observed use</p><div class="tbl-wrap"><table><thead><tr><th>Finding</th><th>Basis</th><th>Confidence</th></tr></thead><tbody>'+
-     t.observed.map(function(o){return "<tr><td>"+o.v+"</td><td>"+o.src+"</td><td>"+conf(o.c)+"</td></tr>";}).join("")+"</tbody></table></div>";
+     t.observed.map(function(o){return "<tr><td>"+o.v+"</td><td>"+o.src+"</td><td>"+conf(o.c,o.r)+"</td></tr>";}).join("")+"</tbody></table></div>";
   } else {
     h+='<p class="sub-h">Observed use '+conf("none")+'</p><p class="hint">No usage mix has been published for this tool.</p>';
   }
@@ -633,6 +714,7 @@ function profileHTML(t){
   h+='</section>';
   var r=RATE[t.power.r];
   h+='<section class="sec"><h3>Staying power</h3><p class="hint">My judgment for the next two years, not a forecast from a source.</p><p><span class="rate '+r[1]+'">'+r[0]+'</span></p><div class="two" style="margin-top:12px"><div><p class="sub-h">Working in its favor</p><div class="list good">'+li(t.power.good)+'</div></div><div><p class="sub-h">Working against it</p><div class="list bad">'+li(t.power.bad)+'</div></div></div></section>';
+  h+='<section class="sec"><h3>Sources for this tool</h3><p class="hint">Each confidence tag above also lists its own sources when you hover, focus, or tap it.</p>'+refList(toolRefs(t))+'</section>';
   return h;
 }
 
@@ -648,10 +730,11 @@ function compareHTML(){
    ["Who can use it", function(t){return li(t.access);}],
    ["Built-in controls", function(t){return li(t.controls);}],
    ["Watch for", function(t){return li(t.risks);}],
-   ["Usage", function(t){return t.usage.map(function(u){return "<p><strong>"+u.k+":</strong> "+u.v+" "+conf(u.c)+"</p>";}).join("");}],
+   ["Usage", function(t){return t.usage.map(function(u){return "<p><strong>"+u.k+":</strong> "+u.v+" "+conf(u.c,u.r)+"</p>";}).join("");}],
    ["What people do", function(t){
-      var out=""; if(t.observed.length){out+=t.observed.map(function(o){return "<p>"+o.v+" "+conf(o.c)+"</p>";}).join("");} else {out+="<p>Observed mix "+conf("none")+"</p>";}
+      var out=""; if(t.observed.length){out+=t.observed.map(function(o){return "<p>"+o.v+" "+conf(o.c,o.r)+"</p>";}).join("");} else {out+="<p>Observed mix "+conf("none")+"</p>";}
       if(t.stated.length){out+='<p><em>Vendor-stated:</em> '+t.stated[0]+"</p>";} return out;}],
+   ["Sources", function(t){return refList(toolRefs(t));}],
    ["Staying power", function(t){var r=RATE[t.power.r]; return '<span class="rate '+r[1]+'">'+r[0]+"</span>"+li(t.power.bad.slice(0,2));}]
   ];
   var h='<div class="cmp-bar"><h2 style="font-size:26px">Side by side</h2><button class="btn" data-clear="1">Clear comparison</button><span class="hint" style="margin:0">Pick up to two tools to compare with '+byId(state.primary).name+'. The first column stays put when you scroll sideways.</span></div>';
@@ -673,16 +756,16 @@ function usageHTML(){
   var h='<div class="pane" style="margin-top:22px"><div class="pane-head"><h2>Usage and what people do</h2><p class="lead">What exists, what does not, and how far to trust it.</p></div>';
   h+='<section class="sec"><h3>Platform reach</h3><p class="hint">Latest reported users. Definitions differ (weekly versus monthly; app versus across apps), so compare size roughly, not exactly. Solid bar is the low estimate, faded bar the high. Hatched means Medium or Low confidence.</p><div class="bars">';
   REACH.forEach(function(r){
-    h+='<div class="bar-row"><div class="bar-name">'+r.n+'</div><div class="bar-track" role="img" aria-label="'+r.n+': '+r.label+'"><div class="bar-max" style="width:'+(r.hi/max*100)+'%"></div><div class="bar-fill '+(r.c==="high"?"":r.c)+'" style="width:'+(r.lo/max*100)+'%"></div></div><div class="bar-label">'+r.label+" "+conf(r.c)+"<small>"+r.src+"</small></div></div>";
+    h+='<div class="bar-row"><div class="bar-name">'+r.n+'</div><div class="bar-track" role="img" aria-label="'+r.n+': '+r.label+'"><div class="bar-max" style="width:'+(r.hi/max*100)+'%"></div><div class="bar-fill '+(r.c==="high"?"":r.c)+'" style="width:'+(r.lo/max*100)+'%"></div></div><div class="bar-label">'+r.label+" "+conf(r.c,r.r)+"<small>"+r.src+"</small></div></div>";
   });
   h+='</div><div class="note">These are chatbot platforms. They say little about how many people run an agent such as Cowork, Work, or Spark.</div></section>';
   h+='<section class="sec"><h3>Agent usage signals</h3><p class="hint">The only agent-specific numbers we found.</p><div class="tbl-wrap"><table><thead><tr><th>Agent</th><th>Signal</th><th>Caveat</th><th>Confidence</th></tr></thead><tbody>'+
-    AGENT_SIGNALS.map(function(a){return "<tr><td>"+a.t+"</td><td>"+a.v+"</td><td>"+a.s+"</td><td>"+conf(a.c)+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+    AGENT_SIGNALS.map(function(a){return "<tr><td>"+a.t+"</td><td>"+a.v+"</td><td>"+a.s+"</td><td>"+conf(a.c,a.r)+"</td></tr>";}).join("")+"</tbody></table></div></section>";
   h+='<section class="sec"><h3>What people do</h3><p class="hint">Each vendor classifies its own data differently, so rows are not directly comparable. Conversations and messages are not people.</p><div class="tbl-wrap"><table><thead><tr><th>Tool</th><th>Observed mix</th><th>Basis</th><th>Confidence</th></tr></thead><tbody>'+
-    WORKMIX.map(function(a){return "<tr><td>"+a.t+"</td><td>"+a.v+"</td><td>"+a.b+"</td><td>"+conf(a.c)+"</td></tr>";}).join("")+"</tbody></table></div>"+
+    WORKMIX.map(function(a){return "<tr><td>"+a.t+"</td><td>"+a.v+"</td><td>"+a.b+"</td><td>"+conf(a.c,a.r)+"</td></tr>";}).join("")+"</tbody></table></div>"+
     '<div class="note info"><strong>For our audience.</strong> Everyday writing, analysis, admin, and spreadsheet work is the common ground. Coding is a small share of ChatGPT use and a larger share of Claude use, so do not assume it dominates for solopreneurs.</div></section>';
   h+='<section class="sec"><h3>Industry cross-section</h3><p class="hint">Market-level adoption, not per tool. No credible source ties a specific tool to a specific industry.</p><div class="tbl-wrap"><table><thead><tr><th>Sector</th><th>Firms using AI</th><th>Notes</th></tr></thead><tbody>'+
-    INDUSTRY.map(function(a){return "<tr><td>"+a.s+"</td><td>"+a.firm+"</td><td>"+a.note+"</td></tr>";}).join("")+"</tbody></table></div>"+
+    INDUSTRY.map(function(a){return "<tr><td>"+a.s+"</td><td>"+a.firm+"</td><td>"+a.note+(a.r?'<div class="insrc">Sources: '+srcInline(a.r)+"</div>":"")+"</td></tr>";}).join("")+"</tbody></table></div>"+
     '<div class="note"><strong>Managing expectations.</strong> About three in four US firms were not using AI in the latest Census window, and "ever use" runs far ahead of "daily use". Large-enterprise surveys run much higher because they measure big organizations.</div></section></div>';
   return h;
 }
@@ -719,8 +802,14 @@ function evidenceHTML(){
    '<ul class="list"><li>Is it an end-user product that a non-developer can use?</li><li>Does it map to a Book in the series?</li><li>Does it have a layperson cost and access path (free or about $30 a month, available in the US)?</li></ul>'+
    '<p class="hint" style="margin-top:10px">Jev, OpenAI Dots, and Instinct are on the watchlist because of this gate. Freeze Tier 1 and Tier 2 on a set date and review quarterly.</p></section>';
   h+='<section class="sec"><h3>Confidence labels</h3><p>'+conf("high")+' first-party or primary source. '+conf("med")+' reputable secondary source or third-party estimate. '+conf("low")+' single blog, unsourced, or conflicting. '+conf("none")+' no figure exists.</p></section>';
-  h+='<section class="sec"><h3>Sources reviewed</h3><div class="tbl-wrap"><table><thead><tr><th>Source</th><th>Grade</th><th>How it was used</th></tr></thead><tbody>'+
-    SOURCES.map(function(s){return "<tr><td>"+s.n+"</td><td><strong>"+s.g+"</strong></td><td>"+s.w+"</td></tr>";}).join("")+"</tbody></table></div></section>";
+  var used={};
+  function mark(id,label){ if(!used[id]) used[id]=[]; if(used[id].indexOf(label)<0) used[id].push(label); }
+  TOOLS.forEach(function(t){ toolRefs(t).forEach(function(id){mark(id,t.name);}); });
+  REACH.concat(AGENT_SIGNALS,WORKMIX,INDUSTRY).forEach(function(x){ (x.r||[]).forEach(function(id){mark(id,"Usage tab");}); });
+  var order={"A":0,"B":1,"Not read":2,"Drop":3};
+  var rids=Object.keys(REFS).sort(function(a,b){return order[REFS[a].grade]-order[REFS[b].grade];});
+  h+='<section class="sec" id="refs"><h3>Reference library ('+rids.length+' sources)</h3><p class="hint">Grade A is first-party, or a major outlet citing primary data. B is a secondary roundup. "Not read" means the site blocked automated access. "Drop" means reviewed and not used.</p><div class="tbl-wrap"><table><thead><tr><th>Source</th><th>Grade</th><th>What it supports</th><th>Used on</th></tr></thead><tbody>'+
+    rids.map(function(id){var r=REFS[id]; return "<tr><td>"+(r.url?'<a href="'+r.url+'" target="_blank" rel="noopener noreferrer">'+r.name+"</a>":r.name+" (no link captured)")+"</td><td><strong>"+r.grade+"</strong></td><td>"+r.note+"</td><td>"+((used[id]||[]).join(", ")||"Not used")+"</td></tr>";}).join("")+"</tbody></table></div></section>";
   h+='<section class="sec"><h3>Open gaps</h3><div class="tbl-wrap"><table><thead><tr><th>Gap</th><th>How the board handles it</th></tr></thead><tbody>'+
     GAPS.map(function(g){return "<tr><td>"+g[0]+"</td><td>"+g[1]+"</td></tr>";}).join("")+"</tbody></table></div></section>";
   h+='<section class="sec"><h3>Corrections made along the way</h3>'+li(CORRECTIONS)+"</section></div>";
@@ -729,14 +818,17 @@ function evidenceHTML(){
 
 /* ---------- RENDER + EVENTS ---------- */
 function render(){
+  hideTip();
   var v=$("#view");
   var html = state.tab==="tools"? toolsHTML() : state.tab==="usage"? usageHTML() : state.tab==="cost"? costHTML() : evidenceHTML();
   v.innerHTML=html;
   document.querySelectorAll(".tab").forEach(function(b){b.setAttribute("aria-selected", b.getAttribute("data-tab")===state.tab);});
+  var rt=$("#ref-top"); if(rt) rt.textContent="All sources ("+Object.keys(REFS).length+")";
 }
 document.addEventListener("click",function(e){
   var el=e.target.closest("button, input");
   if(!el) return;
+  if(el.id==="ref-top"){ state.tab="evidence"; render(); var rs=document.getElementById("refs"); if(rs) rs.scrollIntoView({behavior:"smooth"}); return; }
   if(el.classList.contains("tab")){ state.tab=el.getAttribute("data-tab"); render(); window.scrollTo(0,0); return; }
   if(el.hasAttribute("data-filter")){ state.filter=el.getAttribute("data-filter"); render(); return; }
   if(el.hasAttribute("data-pick") && el.tagName==="BUTTON"){
@@ -757,6 +849,57 @@ document.addEventListener("change",function(e){
   if(el.id==="in-cohort"){ state.cost.cohort=Math.max(1,Math.min(200,+el.value||1)); render(); return; }
   if(el.type==="checkbox" && el.hasAttribute("data-pick")){ state.cost.picks[el.getAttribute("data-pick")]=el.checked; render(); return; }
 });
+
+/* ---------- SOURCE TOOLTIP ---------- */
+var tipEl=document.createElement("div");
+tipEl.id="tip"; tipEl.setAttribute("role","tooltip"); tipEl.hidden=true;
+document.body.appendChild(tipEl);
+var tipTimer=null, tipFor=null, tipPinned=false;
+function placeTip(btn){
+  var r=btn.getBoundingClientRect();
+  var w=tipEl.offsetWidth, h=tipEl.offsetHeight;
+  var left=Math.max(8, Math.min(r.left, window.innerWidth-w-8));
+  var top=r.bottom+6;
+  if(top+h>window.innerHeight-8) top=Math.max(8, r.top-h-6);
+  tipEl.style.left=left+"px"; tipEl.style.top=top+"px";
+}
+function showTip(btn){
+  clearTimeout(tipTimer);
+  var ids=(btn.getAttribute("data-refs")||"").split(",").filter(Boolean);
+  tipEl.innerHTML='<div class="tip-h">Sources for this figure</div>'+refList(ids);
+  tipEl.hidden=false; tipFor=btn; placeTip(btn);
+}
+function hideTip(){ clearTimeout(tipTimer); if(tipEl){ tipEl.hidden=true; } tipFor=null; tipPinned=false; }
+function later(){ clearTimeout(tipTimer); tipTimer=setTimeout(hideTip,220); }
+document.addEventListener("mouseover",function(e){
+  var b=e.target.closest(".has-src");
+  if(b){ if(!tipPinned) showTip(b); return; }
+  if(e.target.closest("#tip")){ clearTimeout(tipTimer); }
+});
+document.addEventListener("mouseout",function(e){
+  if(tipPinned) return;
+  if(e.target.closest(".has-src") || e.target.closest("#tip")) later();
+});
+document.addEventListener("focusin",function(e){
+  var b=e.target.closest(".has-src");
+  if(b){ showTip(b); return; }
+  if(e.target.closest("#tip")){ clearTimeout(tipTimer); }
+});
+document.addEventListener("focusout",function(e){
+  if(e.target.closest(".has-src") || e.target.closest("#tip")) later();
+});
+document.addEventListener("click",function(e){
+  var b=e.target.closest(".has-src");
+  if(b){
+    if(tipPinned && tipFor===b){ hideTip(); }
+    else { showTip(b); tipPinned=true; }
+    return;
+  }
+  if(!e.target.closest("#tip")) hideTip();
+});
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") hideTip(); });
+window.addEventListener("scroll",function(){ if(tipEl && !tipEl.hidden) hideTip(); },true);
+
 render();
 </script>
 </body>
