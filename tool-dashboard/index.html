@@ -247,7 +247,7 @@ var TOOLS = [
  power:{r:"near", good:["Google distribution and a generous free tier."], bad:["Frequent renames and plan changes."]}
 },
 {
- id:"claude-chat", refs:["anthropic-ei","gptinsights","devstory","sqmag"], name:"Claude (chat and Projects)", vendor:"Anthropic", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1",
+ id:"claude-chat", refs:["anthropic-ei","gptinsights","devstory","sqmag","st-claude","panto-claude","demandsage-claude","aeovision"], name:"Claude (chat and Projects)", vendor:"Anthropic", kind:"Chat with persistent project memory", group:"book1", tier:"t1", books:"Book 1",
  free:true, entry:0, entryLabel:"Free",
  pitch:"A chat assistant with saved projects and standing instructions, for the longer-running conversations in Book 1.",
  ladder:[
@@ -259,10 +259,11 @@ var TOOLS = [
  controls:["Chat only unless you enable connectors."],
  risks:["Fluent text is easy to over-trust. This is what the Book 1 verification skills train against."],
  usage:[
-  {k:"Monthly users", v:"245M (Sensor Tower, May 2026). Another tracker says 56M.", src:"Sensor Tower via trade press", c:"med", r:["devstory","techinsider-chatgpt"]},
+  {k:"Monthly users", v:"56M monthly app users (Sensor Tower via Reuters, Q2 2026) versus 245M web plus app (Sensor Tower State of AI). Most likely a definition gap, not a contradiction. Anthropic confirms neither.", src:"Sensor Tower via DemandSage, AEOVision, The Developer Story", c:"med", r:["demandsage-claude","aeovision","devstory"]},
+  {k:"App downloads", v:"20M worldwide in April 2026, ninth among all apps (ChatGPT 53M, Gemini 32M).", src:"Appfigures via SecondTalent", c:"med", r:["st-claude"]},
   {k:"Web traffic share", v:"9.3% of chatbot web visits (Aug 2026).", src:"Similarweb", c:"med", r:["st-llm"]},
   {k:"Time per user", v:"About 120 minutes a month.", src:"Sensor Tower State of AI 2026", c:"med", r:["st-gemini"]},
-  {k:"Official user total", v:"One source says Anthropic does not publish one.", src:"SQ Magazine", c:"low", r:["sqmag"]}
+  {k:"Official user total", v:"None. Anthropic publishes no monthly user count. Figures of 200M or more circulate online but are unconfirmed.", src:"SecondTalent, Panto, SQ Magazine", c:"med", r:["st-claude","panto-claude","sqmag"]}
  ],
  observed:[
   {v:"Work, personal, and coursework split: 43%, 40%, 16% of classified conversations (May 2026 snapshot).", src:"Anthropic Economic Index, restated by a third party", c:"med", r:["gptinsights"]},
@@ -356,11 +357,11 @@ var TOOLS = [
  power:{r:"near", good:["Google distribution and money.","Nearly 90% of the Fortune 100 use Gemini Enterprise."], bad:["Plan and region rules keep changing.","Pichai acknowledged gaps in agentic coding."]}
 },
 {
- id:"perplexity", refs:["releasebot","dreaming"], name:"Perplexity Computer and Comet", vendor:"Perplexity", kind:"Research agent and AI browser", group:"agents", tier:"t2", books:"Reading variant (cited research)",
+ id:"perplexity", refs:["releasebot","dreaming","gradually","getairefs","pplx-queries"], name:"Perplexity Computer and Comet", vendor:"Perplexity", kind:"Research agent and AI browser", group:"agents", tier:"t2", books:"Reading variant (cited research)",
  free:true, entry:20, entryLabel:"Free browser, $20 agent",
  pitch:"A research-first agent that cites its sources, plus a free AI browser that acts across your open tabs.",
  ladder:[
-  {n:"Comet browser", p:"$0", d:"Free on Windows, Mac, iOS, and Android (one source says since March 2026)."},
+  {n:"Comet browser", p:"$0", d:"Free on Windows, Mac, iOS, and Android. Sources disagree on when it went free (Oct 2025 or Mar 2026)."},
   {n:"Pro", p:"$20", d:"Includes Computer.", entry:true},
   {n:"Max", p:"$200", d:"Highest limits."}
  ],
@@ -371,13 +372,15 @@ var TOOLS = [
   {k:"Web traffic share", v:"About 1.3% (May 2026), down from 2.0% in March.", src:"Similarweb via FatJoe", c:"med", r:["fatjoe-pplx"]},
   {k:"US mobile daily share", v:"Fell from 6% (Oct 2025) to about 2%.", src:"Apptopia via FatJoe", c:"med", r:["fatjoe-pplx"]},
   {k:"Revenue and value", v:"Annualized revenue $450M to $500M; valued at $22.6B.", src:"Trade press", c:"med", r:["fatjoe-pplx"]},
-  {k:"Monthly users", v:"About 45M.", src:"DemandSage", c:"low", r:["instantpress"]}
+  {k:"Monthly users", v:"34M (Mar 2026) to 45M for the core product; 100M+ counting Comet, apps, and API. Perplexity publishes no official figure.", src:"Gradually, GetAIRefs, DemandSage", c:"low", r:["gradually","getairefs","instantpress"]},
+  {k:"Query volume", v:"780M a month in May 2025, the last figure the CEO confirmed. Newer figures (1.2B to 1.5B) are estimates.", src:"CEO at Bloomberg Tech, June 2025; Perplexity AI Magazine", c:"med", r:["pplx-queries"]},
+  {k:"Comet browser users", v:"3M+ monthly in Q1 2026.", src:"GetAIRefs", c:"low", r:["getairefs"]}
  ],
  observed:[{v:"About 55% personal, 30% professional, 15% educational. Productivity and workflow is the largest topic, just over a third of queries.", src:"Cornell analysis, relayed secondhand", c:"med", r:["fatjoe-pplx"]}], stated:[],
  power:{r:"unc", good:["Strong at sourced research. Computer reaches into Microsoft 365."], bad:["Small share; reliant on rivals' models; acquisition or pivot risk."]}
 },
 {
- id:"copilot-cowork", refs:["ms-cowork-ga","neowin","xtended","panto"], name:"Microsoft Copilot Cowork", vendor:"Microsoft", kind:"Enterprise agent in Microsoft 365", group:"agents", tier:"t4", books:"Enterprise fork only",
+ id:"copilot-cowork", refs:["ms-cowork-ga","neowin","xtended","panto","stackmatix","tnw"], name:"Microsoft Copilot Cowork", vendor:"Microsoft", kind:"Enterprise agent in Microsoft 365", group:"agents", tier:"t4", books:"Enterprise fork only",
  free:false, entry:30, entryLabel:"$30+ plus usage",
  pitch:"Long-running multi-tool tasks inside Microsoft 365, governed by IT. Not a fit for solopreneurs.",
  ladder:[
@@ -392,12 +395,13 @@ var TOOLS = [
   {k:"Paid Copilot seats", v:"30M+ (July 2026), up from 15M in January. This is Copilot overall, not Cowork.", src:"Microsoft, via XtendedView", c:"med", r:["xtended","instantpress"]},
   {k:"Copilot family", v:"150M+ active users.", src:"Microsoft, via XtendedView", c:"med", r:["xtended"]},
   {k:"Chatbot web share", v:"2.8% worldwide, 7.95% in the US (Aug 2026).", src:"Web-traffic tracker via XtendedView", c:"med", r:["xtended"]},
-  {k:"Cowork-specific", v:"Not published. Only a vague 'thousands of customers' claim.", src:"-", c:"none"}
+  {k:"Workplace conversion", v:"35.8% of employees with Copilot access actively use it (survey of 150,000+ US respondents).", src:"Recon Analytics, via Stackmatix", c:"med", r:["stackmatix"]}, {k:"Cowork-specific", v:"Not published. Only a vague 'thousands of customers' claim.", src:"-", c:"none"}
  ],
  observed:[
   {v:"Of 100,000+ chats: 49% cognitive work, 19% working with people, 15% finding information, 17% producing work.", src:"Microsoft Work Trend Index, via Panto", c:"med", r:["panto"]},
   {v:"Daily use by app: Teams 34%, Outlook 33%, Word 25%.", src:"Government trial data, via Panto", c:"med", r:["panto"]},
-  {v:"Why users lapsed: 44.2% distrust accuracy, 28.5% too much editing, 16% unclear use, 8.3% slow. The underlying study is unnamed.", src:"XtendedView", c:"low", r:["xtended"]}
+  {v:"44.2% of lapsed users say distrust of answers is the main reason they stopped. Copilot accuracy score (net promoter) was -19.8 in Jan 2026.", src:"Recon Analytics research, relayed by The Next Web and Stackmatix", c:"med", r:["tnw","stackmatix"]},
+  {v:"Other lapse reasons: 28.5% too much editing, 16% unclear use, 8.3% slow. These appear in only one secondary source.", src:"XtendedView", c:"low", r:["xtended"]}
  ], stated:["Named large deployments (seat counts, not usage): NHS England 505,000; Accenture 740,000+; KPMG 276,000+; HSBC 200,000."],
  power:{r:"near", good:["Enormous installed base (450M+ commercial seats)."], bad:["Cowork is a metered add-on and depends on Anthropic models."]}
 },
@@ -424,7 +428,7 @@ var TOOLS = [
  power:{r:"unc", good:["SpaceX capital and a $60B Cursor acquisition behind an enterprise push."], bad:["Revenue reported near $500M against about $1B monthly burn (single secondary source).","Co-founders departed; compliance certifications less mature; deepfake investigations in several countries."]}
 },
 {
- id:"muse", refs:["aal-muse","channelnews","forbes-muse","tc-muse"], name:"Meta Muse", vendor:"Meta", kind:"Personal agent (app, web, WhatsApp)", group:"agents", tier:"t3", books:"Reading variant and security case study",
+ id:"muse", refs:["aal-muse","channelnews","forbes-muse","tc-muse","tc-muse2","superpower","aiinsider","tech-insider-muse"], name:"Meta Muse", vendor:"Meta", kind:"Personal agent (app, web, WhatsApp)", group:"agents", tier:"t3", books:"Reading variant and security case study",
  free:true, entry:0, entryLabel:"Free (card required)",
  pitch:"A consumer agent with its own secure cloud computer that books, shops, fills forms, and keeps working after you close the app.",
  ladder:[
@@ -438,7 +442,8 @@ var TOOLS = [
  usage:[
   {k:"Downloads", v:"5M US downloads in 22 days. ChatGPT took 56 days; Grok 103; Claude 492.", src:"Sensor Tower via Forbes", c:"med", r:["forbes-muse"]},
   {k:"Daily users", v:"About 642,000 US mobile daily users around day 12, versus 231,000 for ChatGPT at the same point.", src:"Apptopia estimate via TechCrunch", c:"med", r:["tc-muse"]},
-  {k:"Retention", v:"Unknown. Skeptics call early numbers curiosity-driven, helped by heavy Meta promotion.", src:"Forbes", c:"low", r:["forbes-muse"]}
+  {k:"Retention", v:"Nobody has published it. Trackers disagree even on downloads (2.3M to 4.3M as of Sept 25), and Meta gave Muse most of its house ad inventory.", src:"Sensor Tower, Apptopia, Appfigures via trade press", c:"none", r:["superpower","aiinsider","forbes-muse"]},
+  {k:"Other daily-user estimates", v:"About 560,000 daily users at day 11 (Sensor Tower); near 700,000 US daily users by late September (Similarweb, cited later).", src:"Tech-Insider, citing trackers", c:"low", r:["tech-insider-muse","tc-muse2"]}
  ],
  observed:[], stated:["Research, bookings, forms, email, shopping, goal tracking. The small-business version targets advertising, sales, social media, finance, creative work, and customer messages."],
  power:{r:"unp", good:["Meta's distribution, especially WhatsApp. The company itself is not going anywhere."], bad:["Brand new, unproven retention, trust concerns, and retailer blocks."]}
@@ -502,11 +507,11 @@ var RATE = {near:["Near-certain","rate-near"], likely:["Likely","rate-likely"], 
 var REACH = [
  {n:"ChatGPT", hi:1000, lo:900, label:"900M to 1B weekly", src:"OpenAI statements (Feb and Aug 2026)", c:"med", r:["techchecker","techinsider-chatgpt"]},
  {n:"Gemini app", hi:1000, lo:950, label:"950M to 1B monthly", src:"Alphabet Q2 call; Google blog (Aug 2026)", c:"high", r:["alphabet","instantpress"]},
- {n:"Meta AI", hi:1000, lo:1000, label:"1B monthly across Meta apps", src:"Meta statement, 2025", c:"low", r:["instantpress"]},
- {n:"Claude", hi:245, lo:56, label:"56M to 245M monthly", src:"Sensor Tower and another tracker disagree", c:"med", r:["devstory","techinsider-chatgpt"]},
+ {n:"Meta AI", hi:1000, lo:640, label:"640M (stricter estimate) to 1B monthly", src:"Official figure is 1B (May 2025). Meta has published no newer total.", c:"med", r:["aboutchromebooks","sqmag-meta","aibw-meta"]},
+ {n:"Claude", hi:245, lo:56, label:"56M app to 245M web plus app, monthly", src:"Sensor Tower. Anthropic publishes no total.", c:"med", r:["demandsage-claude","aeovision","st-claude"]},
  {n:"Copilot family", hi:150, lo:150, label:"150M+ active", src:"Microsoft via XtendedView (30M+ paid seats)", c:"med", r:["xtended","panto"]},
  {n:"Grok", hi:117, lo:50, label:"50M to 117M monthly", src:"Third-party versus SpaceX filing (Mar 2026)", c:"med", r:["fatjoe-grok","aibw-grok"]},
- {n:"Perplexity", hi:45, lo:45, label:"About 45M monthly", src:"DemandSage", c:"low", r:["instantpress"]}
+ {n:"Perplexity", hi:100, lo:34, label:"34M to 100M+ monthly", src:"No official figure. Range depends on what is counted.", c:"low", r:["gradually","getairefs","instantpress"]}
 ];
 
 var AGENT_SIGNALS = [
@@ -589,6 +594,22 @@ var REFS = {
  "techchecker":{name:"TechnologyChecker: ChatGPT statistics", url:"https://technologychecker.io/blog/chatgpt-statistics", grade:"B", note:"900M weekly users, confirmed by OpenAI in Feb 2026."},
  "aibw-share":{name:"AI Business Weekly: AI market share 2026", url:"https://aibusinessweekly.net/p/ai-market-share-2026", grade:"B", note:"Cross-platform user and share estimates."},
  "sqmag":{name:"SQ Magazine: Claude versus ChatGPT statistics", url:"https://sqmagazine.co.uk/claude-vs-chatgpt-statistics/", grade:"B", note:"Notes that Anthropic publishes no user total."},
+ "st-claude":{name:"SecondTalent: Claude AI statistics (Sept 2026)", url:"https://www.secondtalent.com/resources/claude-ai-statistics/", grade:"A", note:"States Anthropic publishes no monthly user count; Appfigures download estimates."},
+ "panto-claude":{name:"Panto: Claude AI statistics", url:"https://www.getpanto.ai/blog/claude-ai-statistics", grade:"B", note:"Also states Anthropic has not disclosed a consolidated user figure."},
+ "demandsage-claude":{name:"DemandSage: Claude AI statistics", url:"https://www.demandsage.com/claude-ai-statistics/", grade:"B", note:"Cites Sensor Tower State of AI 2026: 245M web plus app; 56M app."},
+ "aeovision":{name:"AEOVision: Claude statistics", url:"https://aeovision.ai/articles/claude-geo-statistics-2026/", grade:"B", note:"56M monthly app users in Q2 2026, Sensor Tower via Reuters."},
+ "gradually":{name:"Gradually: Perplexity statistics", url:"https://www.gradually.ai/en/perplexity-statistics/", grade:"B", note:"States Perplexity does not publish official user numbers; 34M monthly (Mar 2026)."},
+ "getairefs":{name:"GetAIRefs: Perplexity statistics (June 2026)", url:"https://getairefs.com/blog/perplexity-statistics-june-2026/", grade:"B", note:"45M core users; 100M+ across all products (Sacra); Comet 3M+."},
+ "pplx-queries":{name:"Perplexity AI Magazine: monthly queries, verified", url:"https://perplexityaimagazine.com/perplexity-hub/perplexity-ai-monthly-queries/", grade:"B", note:"Only CEO-confirmed figure: 780M queries a month (May 2025)."},
+ "stackmatix":{name:"Stackmatix: Copilot adoption and trends", url:"https://www.stackmatix.com/blog/copilot-market-adoption-trends", grade:"B", note:"Cites Recon Analytics: 35.8% workplace conversion, accuracy NPS, 44.2% distrust."},
+ "tnw":{name:"The Next Web: Copilot 'entertainment only' and adoption slump", url:"https://thenextweb.com/news/microsoft-copilot-entertainment-only-disclaimer-adoption", grade:"B", note:"Attributes the 44.2% distrust figure to Recon Analytics research."},
+ "aboutchromebooks":{name:"AboutChromebooks: Meta AI usage statistics", url:"https://www.aboutchromebooks.com/meta-ai-usage-statistics/", grade:"B", note:"Meta has not published a newer Meta AI total than 1B (May 2025)."},
+ "aibw-meta":{name:"AI Business Weekly: Meta AI statistics", url:"https://aibusinessweekly.net/p/meta-ai-statistics", grade:"B", note:"Stricter estimate of about 640M active Meta AI users (Presenc AI)."},
+ "sqmag-meta":{name:"SQ Magazine: Meta AI statistics", url:"https://sqmagazine.co.uk/meta-ai-statistics/", grade:"B", note:"1B monthly users announced by Zuckerberg, May 2025."},
+ "tc-muse2":{name:"TechCrunch (Yahoo copy): Meta is putting its muscle behind Muse", url:"https://finance.yahoo.com/technology/ai/articles/meta-putting-muscle-behind-muse-161652305.html", grade:"A", note:"Download estimates from Sensor Tower and Appfigures; daily users after Connect."},
+ "superpower":{name:"Superpower Daily: Muse tops 3.4M estimated downloads", url:"https://superpowerdaily.com/posts/meta-s-muse-tops-3-4-million-estimated-downloads-as-its-promotion-ramps-up", grade:"B", note:"Trackers disagree on downloads: 2.3M, 3.4M, and 4.3M."},
+ "aiinsider":{name:"The AI Insider: Muse tops 3.4M downloads", url:"https://theaiinsider.tech/2026/09/28/metas-muse-ai-agent-tops-3-4-million-downloads-as-meta-opens-early-access-to-new-features/", grade:"B", note:"Download growth versus ChatGPT, Claude, and Grok at launch; Meta house-ad promotion."},
+ "tech-insider-muse":{name:"Tech-Insider: Muse Spark 1.3 and early Muse numbers", url:"https://tech-insider.org/muse-spark-1-3-frontier-tier-3-4m-downloads-2026/", grade:"B", note:"Later daily-user estimates (Sensor Tower about 560K at day 11; Similarweb near 700K)."},
  "howdoiuseai":{name:"HowDoIUseAI: ChatGPT Work vs Claude Cowork vs Gemini Spark", url:null, grade:"B", note:"Source of the 1.2M Cowork session sample. The link was truncated in search results, so no stable URL was captured."},
  "bloomberg":{name:"Bloomberg: Grok Bot tops 400,000 users", url:"https://www.bloomberg.com/news/articles/2026-09-22/spacexai-s-grok-bot-agent-tops-400-000-users-after-first-month", grade:"Not read", note:"Blocks automated access. Read through the Briefs summary."},
  "seekingalpha":{name:"Seeking Alpha: Grok Bot surpasses 400K users", url:"https://seekingalpha.com/news/4645536-spacexais-grok-bot-agent-surpasses-400k-users-in-first-month-report", grade:"Not read", note:"Blocks automated access."},
@@ -600,7 +621,7 @@ var REFS = {
 
 var GAPS = [
  ["Real usage for Cowork, ChatGPT Work, Spark, Dots, and Copilot Cowork","Not published. The board shows 'Not published' rather than guessing."],
- ["Retention for new agents (Muse especially)","Unknown. Downloads and early daily users only."],
+ ["Retention for new agents (Muse especially)","Still unknown after a second look. Trackers disagree on downloads and nobody publishes retention."],
  ["What people do with Gemini, Spark, Grok Bot, Muse, and Dots","Only vendor-stated uses exist. No observed mix."],
  ["Which tools each industry uses","Only vendor testimonials and seat counts. No credible per-tool industry data."],
  ["Unread headlines: an FTC probe, an OpenAI IPO delay, unsecured OpenAI agents posting user images","Seen on news sidebars only. A search for the FTC item found only a 2023 matter. Verify before using."],
@@ -609,6 +630,11 @@ var GAPS = [
 ];
 
 var CORRECTIONS = [
+ "Second pass on Low-confidence items: Claude 56M versus 245M is most likely a definition gap (app only versus web plus app). Anthropic publishes neither.",
+ "Perplexity has no official user figure. Estimates run from 34M to 100M+ depending on definition. The only CEO-confirmed figure is 780M queries a month in May 2025.",
+ "The Copilot 44.2% distrust figure traces to Recon Analytics research. The other three lapse reasons appear in only one secondary source and stay Low.",
+ "Meta AI: the only official figure is 1B monthly users (May 2025). Meta has published no newer total; a stricter estimate is about 640M.",
+ "Comet browser: sources disagree on when it went free (Oct 2025 versus Mar 2026).",
  "The '318,800 Cowork community members' figure is a Facebook group run by a training site. It is not a usage metric and has been removed.",
  "Grok's user count moved from about 50M (third-party) to 117M (SpaceX filing). The filing counts Grok features across X.",
  "Muse is available in the US and Canada, not US only.",
