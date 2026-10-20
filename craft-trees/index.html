@@ -121,7 +121,8 @@ const c1 = [
   { id: "diagnosis",    name: "Diagnosis",    cls: 1, x: 450, tier: 6,  desc: "Telling a \"hallucination\" (an AI making something up) apart from an ordinary mistake a person could just as easily make." },
   { id: "review",       name: "Review",       cls: 1, x: 450, tier: 7,  desc: "Doing a deliberate second read of AI output aimed specifically at catching errors - the checking habits from Triage, Digest, and Composition, now combined into one routine." },
   { id: "detection",    name: "Detection",    cls: 1, x: 450, tier: 8,  desc: "Spotting an error that's been deliberately hidden inside confident, well-written AI text." },
-  { id: "context",      name: "Context",      cls: 1, x: 190, tier: 9,  desc: "Feeding your AI profile into a brand-new conversation so the tool has context about you right from the start." },
+  { id: "context",      name: "Context",      cls: 1, x: 190, tier: 2,  desc: "Feeding your AI profile into a brand-new conversation so the tool has context about you right from the start." },
+  { id: "memory",       name: "Memory",       cls: 1, x: 190, tier: 9,  desc: "Knowing what your AI tool remembers about you between conversations - checking it, correcting it, and deciding what it should forget." },
   { id: "comparison",   name: "Comparison",   cls: 1, x: 710, tier: 9,  desc: "Comparing how you'd verify an answer from a grounded tool (working off your documents) versus a general chat tool (working from memory alone)." },
   { id: "blindspot",    name: "Blind Spot",   cls: 1, x: 580, tier: 10, desc: "Identifying something about your own work that felt too obvious to mention - and is therefore missing from your AI profile." },
   { id: "revision",     name: "Revision",     cls: 1, x: 450, tier: 11, desc: "Rewriting your AI profile with real changes, based on what actually didn't work the first time you used it." },
@@ -135,7 +136,7 @@ const c1Edges = [
   ["audit","calibration"],["calibration","diagnosis"],
   ["diagnosis","review"],["proofing","review"],["accuracy","review"],
   ["review","detection"],["detection","comparison"],["grounding","comparison"],
-  ["profile","context"],["context","revision"],["comparison","blindspot"],
+  ["profile","context"],["context","memory"],["memory","revision"],["comparison","blindspot"],
   ["blindspot","revision"],["revision","fluency"],
 ];
 
@@ -213,8 +214,8 @@ const HAS_BRIDGE = new Set(bridgeEdges.flat());
 // ---------- dependency-depth levels (independent of visual tier/row) ----------
 // Level = 1 for a node with no prerequisite inside its own book; otherwise 1 + the
 // deepest level among its direct prerequisites. This can differ from `tier` (the
-// visual row), which is sometimes shifted to avoid crossed lines - e.g. Context is
-// drawn low (tier 9) but its only prerequisite is Profile (level 2), so it's level 3.
+// visual row), which is sometimes shifted to avoid crossed lines - e.g. Memory is
+// drawn high (tier 9) but its only prerequisite is Context (level 3), so it's level 4.
 function computeLevels(nodeList, edgeList) {
   const preds = {};
   nodeList.forEach(n => { preds[n.id] = []; });
