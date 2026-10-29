@@ -57,13 +57,28 @@
     border: 1px solid; display: flex; flex-direction: column; align-items: center; gap: 6px;
   }
   .card svg { display: block; }
+  .card { position: relative; cursor: help; }
+  .card:focus { outline: 2px solid var(--line-bright); outline-offset: 2px; }
+  /* Tooltip text comes from data-desc, copied from the desc fields in index.html (the source of truth). */
+  .card::after {
+    content: attr(data-desc);
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    width: 230px; padding: 8px 10px; border-radius: 6px; z-index: 10;
+    background: var(--panel); color: var(--text); border: 1px solid var(--line-bright);
+    font-size: 12px; line-height: 1.4; text-align: left;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.12s;
+  }
+  .card:first-child::after { left: 0; transform: none; }
+  .card:last-child::after { left: auto; right: 0; transform: none; }
+  .card:hover::after, .card:focus::after { opacity: 1; visibility: visible; }
   .name { font-size: 10.5px; font-weight: 500; text-align: center; line-height: 1.25; }
 </style>
 </head>
 <body>
 <h1>Craft tree icon reference - all 63, custom SVG</h1>
-<p class="sub">Same visual grammar as the tree: thin strokes in the class color, gold accents marking each craft's specific twist, dashed lines for hypothetical/expected states. Grouped by class and hub, matching the roster order.</p>
-<h2 class="class-heading" style="color:var(--c1)">Class One</h2><div class="hub-label">Mental Model</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+<p class="sub">Same visual grammar as the tree: thin strokes in the class color, gold accents marking each craft's specific twist, dashed lines for hypothetical/expected states. Grouped by class and hub, matching the roster order. Hover over a card, or tab to it, to see what the craft means.</p>
+<h2 class="class-heading" style="color:var(--c1)">Class One</h2><div class="hub-label">Mental Model</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Building an accurate picture of how an LLM actually generates an answer, so you're not relying on guesswork or hype.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="4.0" y="8.0" width="32.0" height="20.0" rx="4.0" fill="none" stroke="var(--c1)" stroke-width="1.6"/>
       <g transform="translate(20,20)"><path d="M-6.0,8.0 L-10.0,16.0 L-10.0,8.0 Z" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -72,7 +87,7 @@
       <circle cx="28.0" cy="18.0" r="2.0" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Model Sense</div>
-    </div></div><div class="hub-label">Prompting</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div></div><div class="hub-label">Prompting</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Writing a prompt that spells out the outcome you want, the context the model needs, and the format the answer should take - instead of a vague ask.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="20.0" r="12.0" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <line x1="20.0" y1="4.0" x2="20.0" y2="8.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -82,7 +97,7 @@
       <circle cx="20.0" cy="20.0" r="2.6" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Precision</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Rewriting a prompt to fix what was missing or wrong in the model's first attempt, instead of starting over from scratch.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M12.0,-4.0 A12.0,12.0 0 1 0 8.0,10.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M4.0,8.0 L8.0,10.0 L9.0,5.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -90,7 +105,7 @@
       <line x1="8.0" y1="14.0" x2="16.0" y2="14.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Iteration</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Getting a usable first draft out of a one-line instruction about what you want the output to accomplish.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="8.0" cy="8.0" r="2.4" fill="var(--line-bright)"/>
       <line x1="14.0" y1="8.0" x2="32.0" y2="8.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -99,7 +114,7 @@
       <line x1="8.0" y1="32.0" x2="26.0" y2="32.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Drafting</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Outlining a document's sections and structure before asking the model to write it.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="6.0" y="6.0" width="28.0" height="28.0" rx="0.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-dasharray="2 2"/>
       <line x1="6.0" y1="16.0" x2="34.0" y2="16.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/>
@@ -109,14 +124,14 @@
       <rect x="6.0" y="6.0" width="10.0" height="10.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6"/>
       </svg>
       <div class="name">Blueprinting</div>
-    </div></div><div class="hub-label">Identity</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div></div><div class="hub-label">Identity</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Drafting a first version of your &quot;AI profile&quot; - a short written description of your work and preferences that you can hand to any AI tool so it has context about you.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="14.0" r="6.0" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-10.0,14.0 C-10.0,4.0 10.0,4.0 10.0,14.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M4.0,-6.0 A4.0,4.0 0 1 1 -4.0,-6.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Profile</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Feeding your AI profile into a brand-new conversation so the tool has context about you right from the start.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="16.0" r="4.8" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-8.0,12.0 C-8.0,4.0 8.0,4.0 8.0,12.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -125,7 +140,7 @@
       <circle cx="20.0" cy="6.0" r="2.0" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Context</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Knowing what your AI tool remembers about you between conversations - checking it, correcting it, and deciding what it should forget.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="17.0" r="4.2" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-7.0,11.0 C-7.0,4.0 7.0,4.0 7.0,11.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -133,7 +148,7 @@
       <g transform="translate(20,20)"><path d="M-8.0,-13.86 A16.0,16.0 0 0 1 8.0,-13.86 M4.6,-16.6 L8.0,-13.86 L4.2,-11.8" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="1"/></g>
       </svg>
       <div class="name">Memory</div>
-    </div></div><div class="hub-label">Output</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div></div><div class="hub-label">Output</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Condensing a long email or chat thread into a short summary of what was actually decided.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="8.0" x2="20.0" y2="20.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="4.0" y1="16.0" x2="20.0" y2="20.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -143,14 +158,14 @@
       <line x1="20.0" y1="20.0" x2="34.0" y2="20.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Digest</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Writing a full document that actually follows the structure you laid out in Blueprinting.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="8.0" y="6.0" width="24.0" height="6.0" rx="0.0" fill="none" stroke="var(--c1)" stroke-width="1.6"/>
       <rect x="8.0" y="14.0" width="24.0" height="14.0" rx="0.0" fill="none" stroke="var(--c1)" stroke-width="1.6"/>
       <rect x="8.0" y="30.0" width="24.0" height="4.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6"/>
       </svg>
       <div class="name">Composition</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Turning a table or spreadsheet of data into a summary a non-technical reader could actually follow.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="6.0" y="22.0" width="4.0" height="10.0" rx="0.0" fill="none" stroke="var(--c1)" stroke-width="1.6"/>
       <rect x="12.0" y="16.0" width="4.0" height="16.0" rx="0.0" fill="none" stroke="var(--c1)" stroke-width="1.6"/>
@@ -158,7 +173,7 @@
       <g transform="translate(20,20)"><path d="M6.0,0.0 C10.0,-6.0 12.0,6.0 16.0,-4.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Plain Speech</div>
-    </div></div><div class="hub-label">Grounding</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div></div><div class="hub-label">Grounding</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Telling the difference between a tool answering from a specific set of documents you gave it, versus one answering from its own general training.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="8.0" r="6.0" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <line x1="20.0" y1="14.0" x2="20.0" y2="28.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -166,7 +181,7 @@
       <circle cx="20.0" cy="33.0" r="2.0" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Grounding</div>
-    </div></div><div class="hub-label">Gauging</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div></div><div class="hub-label">Gauging</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Giving a piece of writing one last check for factual errors or a wrong tone before it goes out.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="12.0" x2="32.0" y2="12.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="6.0" y1="20.0" x2="32.0" y2="20.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -175,7 +190,7 @@
       <circle cx="28.0" cy="28.0" r="2.6" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Proofing</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Comparing an AI-written document against its source material to catch anything it added, dropped, or changed.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="10.0" x2="32.0" y2="10.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="6.0" y1="18.0" x2="24.0" y2="18.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -183,7 +198,7 @@
       <g transform="translate(20,20)"><path d="M6.0,-4.0 L10.0,-8.0 L14.0,-4.0 L10.0,0.0 Z" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Accuracy</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Tracing one specific number in an AI output back to where it came from, to confirm it's correct.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="16.0" cy="16.0" r="8.0" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <line x1="22.0" y1="22.0" x2="34.0" y2="34.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -191,7 +206,7 @@
       <circle cx="8.0" cy="36.0" r="2.0" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Audit</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Deciding which numbers in an AI-written document are important enough to verify, instead of checking everything (too slow) or nothing (too risky).">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="8.0" x2="34.0" y2="8.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="6.0" y1="8.0" x2="20.0" y2="24.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -203,7 +218,7 @@
       <circle cx="20.0" cy="34.0" r="2.8" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Triage</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Learning to trust an AI tool exactly as much as its track record has earned - not automatically, and not never.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="20.0" x2="34.0" y2="20.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="20.0" y1="20.0" x2="20.0" y2="12.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -212,7 +227,7 @@
       <circle cx="20.0" cy="10.0" r="2.4" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Calibration</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Telling a &quot;hallucination&quot; (an AI making something up) apart from an ordinary mistake a person could just as easily make.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-12.0,-12.0 L-4.0,-12.0 L-4.0,-4.0 L-12.0,-4.0 Z" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M4.0,-12.0 L12.0,-12.0 L12.0,-4.0 L4.0,-4.0 Z" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -221,20 +236,20 @@
       <circle cx="28.0" cy="12.0" r="2.6" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Diagnosis</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Doing a deliberate second read of AI output aimed specifically at catching errors - the checking habits from Triage, Digest, and Composition, now combined into one routine.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-14.0,0.0 C-8.0,-10.0 8.0,-10.0 14.0,0.0 C8.0,10.0 -8.0,10.0 -14.0,0.0 Z" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="20.0" cy="20.0" r="4.4" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-8.0,12.0 A10.0,6.0 0 0 0 8.0,12.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/></g>
       </svg>
       <div class="name">Review</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Spotting an error that's been deliberately hidden inside confident, well-written AI text.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-16.0,0.0 C-10.0,-6.0 -6.0,-6.0 -2.0,0.0 C2.0,6.0 6.0,-8.0 10.0,-2.0 C12.0,1.0 14.0,0.0 16.0,0.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="26.0" cy="12.8" r="4.4" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Detection</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Comparing how you'd verify an answer from a grounded tool (working off your documents) versus a general chat tool (working from memory alone).">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="8.0" cy="12.0" r="4.0" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-16.0,-2.0 L-8.0,-2.0 L-12.0,4.0 Z" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -244,13 +259,13 @@
       <line x1="20.0" y1="6.0" x2="20.0" y2="34.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/>
       </svg>
       <div class="name">Comparison</div>
-    </div></div><div class="hub-label">Capstone</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div></div><div class="hub-label">Capstone</div><div class="hub-row"><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Identifying something about your own work that felt too obvious to mention - and is therefore missing from your AI profile.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M0.0,-14.0 C8.0,-14.0 12.0,-8.0 12.0,0.0 C12.0,8.0 6.0,14.0 0.0,14.0 C-6.0,14.0 -12.0,8.0 -12.0,0.0 C-12.0,-8.0 -8.0,-14.0 0.0,-14.0 Z" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="22.0" cy="20.0" r="5.2" fill="var(--c1-fill)"/>
       </svg>
       <div class="name">Blind Spot</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Rewriting your AI profile with real changes, based on what actually didn't work the first time you used it.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="16.0" r="4.8" fill="none" stroke="var(--c1)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-8.0,12.0 C-8.0,4.0 8.0,4.0 8.0,12.0" fill="none" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -258,7 +273,7 @@
       <g transform="translate(20,20)"><path d="M18.0,-6.0 L14.0,-2.0 L12.0,-4.0 Z" fill="var(--line-bright)" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Revision</div>
-    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);">
+    </div><div class="card" style="background:var(--c1-fill); border-color:var(--c1);" tabindex="0" data-desc="Combining every skill from the course into one self-directed workflow, applied to material you've never seen before.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="6.0" cy="20.0" r="2.0" fill="var(--c1)"/>
       <circle cx="13.0" cy="20.0" r="2.0" fill="var(--c1)"/>
@@ -268,7 +283,7 @@
       <line x1="6.0" y1="20.0" x2="34.0" y2="20.0" stroke="var(--c1)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="1 2"/>
       </svg>
       <div class="name">Fluency</div>
-    </div></div><h2 class="class-heading" style="color:var(--c2)">Class Two</h2><div class="hub-label">Connection</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><h2 class="class-heading" style="color:var(--c2)">Class Two</h2><div class="hub-label">Connection</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Telling a tool that's actively connected to a live source apart from one you've simply pasted text into.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="14.0" y="6.0" width="12.0" height="10.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <line x1="17.0" y1="6.0" x2="17.0" y2="2.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -277,7 +292,7 @@
       <g transform="translate(20,20)"><path d="M-6.0,8.0 L6.0,8.0 L6.0,14.0 L-6.0,14.0 Z" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Recognition</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Deciding which data sources are safe and appropriate to connect an AI tool to - and which ones aren't.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="8.0" x2="6.0" y2="32.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="34.0" y1="8.0" x2="34.0" y2="32.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -286,14 +301,14 @@
       <circle cx="26.0" cy="32.0" r="2.0" fill="var(--c2)"/>
       </svg>
       <div class="name">Vetting</div>
-    </div></div><div class="hub-label">Scoping</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><div class="hub-label">Scoping</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Deciding for yourself how much access a connected tool should have, instead of just accepting its default settings.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-12.0,-12.0 L-16.0,-12.0 L-16.0,12.0 L-12.0,12.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M12.0,-12.0 L16.0,-12.0 L16.0,12.0 L12.0,12.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="4.0" cy="8.0" r="2.8" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Ownership</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Limiting a request to one specific section of a source, instead of handing over an entire document.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="6.0" y="6.0" width="28.0" height="28.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <line x1="6.0" y1="16.0" x2="34.0" y2="16.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -301,14 +316,14 @@
       <rect x="6.0" y="16.0" width="16.0" height="8.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-dasharray="2 2"/>
       </svg>
       <div class="name">Boundaries</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Proposing a narrower or different level of access once you've spotted a problem with the current setup.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="8.0" y="12.0" width="16.0" height="16.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <g transform="translate(20,20)"><path d="M4.0,8.0 L12.0,8.0 L12.0,0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M12.0,0.0 L8.0,2.0 M12.0,0.0 L10.0,-4.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Adjustment</div>
-    </div></div><div class="hub-label">Research</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><div class="hub-label">Research</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Bringing your AI profile from Class One into a tool that's now connected to live sources, not just a chat window.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="10.0" cy="16.0" r="4.0" fill="none" stroke="var(--c2)" stroke-width="1.6" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-16.0,10.0 C-16.0,4.0 -4.0,4.0 -4.0,10.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
@@ -316,7 +331,7 @@
       <circle cx="34.0" cy="20.0" r="2.6" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Continuity</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Recognizing when a connected source has more up-to-date information than the model's own training data.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="20.0" r="14.0" fill="none" stroke="var(--c2)" stroke-width="1.6" opacity="1"/>
       <line x1="20.0" y1="20.0" x2="20.0" y2="10.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -324,7 +339,7 @@
       <g transform="translate(20,20)"><path d="M8.0,-4.0 L12.0,-6.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="1 2"/></g>
       </svg>
       <div class="name">Currency</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Pulling exactly the information you need from a connected source, without letting the tool grab more than necessary.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="4.0" y="8.0" width="32.0" height="24.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-dasharray="2 2"/>
       <circle cx="12.0" cy="16.0" r="2.0" fill="var(--c2)"/>
@@ -333,7 +348,7 @@
       <g transform="translate(20,20)"><path d="M8.0,-2.0 L8.0,-12.0 L4.0,-12.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Retrieval</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Combining information pulled from more than one connected source into a single answer.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="6.0" cy="8.0" r="2.0" fill="var(--c2)"/>
       <circle cx="6.0" cy="20.0" r="2.0" fill="var(--c2)"/>
@@ -344,7 +359,7 @@
       <circle cx="20.0" cy="20.0" r="4.4" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Synthesis</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Catching a factual conflict between two sources, instead of letting the tool silently pick one and move on.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="10.0" x2="18.0" y2="10.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="6.0" y1="30.0" x2="18.0" y2="30.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -355,14 +370,14 @@
       <line x1="22.8" y1="17.2" x2="17.2" y2="22.8" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Discrepancy</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Tracing any claim in an AI output back to the exact source it came from.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="8.0" y1="8.0" x2="32.0" y2="8.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-4.0,-12.0 C-4.0,-4.0 -12.0,-4.0 -12.0,4.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/></g>
       <rect x="4.0" y="24.0" width="10.0" height="8.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6"/>
       </svg>
       <div class="name">Provenance</div>
-    </div></div><div class="hub-label">Dispatch</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><div class="hub-label">Dispatch</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Running a fixed three-question check before approving any action where the AI tool actually sends, writes, or changes something (not just answers a question).">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="4.0" y="16.0" width="6.0" height="6.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <rect x="14.0" y="16.0" width="6.0" height="6.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
@@ -371,7 +386,7 @@
       <g transform="translate(20,20)"><path d="M12.0,8.0 L18.0,8.0 L14.0,12.0 Z" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Sign-off</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Catching a wrong recipient or wrong target before an AI-initiated action actually goes out.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="26.0" cy="20.0" r="10.0" fill="none" stroke="var(--c2)" stroke-width="1.6" opacity="1"/>
       <line x1="26.0" y1="6.0" x2="26.0" y2="34.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -380,21 +395,21 @@
       <g transform="translate(20,20)"><path d="M-16.0,-12.0 L-6.0,-12.0 L-6.0,-6.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Targeting</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Understanding why reviewing an action that changes something is higher-stakes than reviewing a plain chat answer.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="28.0" x2="36.0" y2="28.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <rect x="8.0" y="16.0" width="8.0" height="12.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <rect x="24.0" y="8.0" width="8.0" height="20.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6"/>
       </svg>
       <div class="name">Threshold</div>
-    </div></div><div class="hub-label">Sprawl</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><div class="hub-label">Sprawl</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Recognizing &quot;scope creep&quot; - the AI doing more than it was asked - as its own kind of error, distinct from making something up.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="8.0" y="8.0" width="20.0" height="24.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <line x1="28.0" y1="14.0" x2="38.0" y2="14.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="28.0" y1="26.0" x2="36.0" y2="26.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Overreach</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Catching one planted, out-of-scope detail hidden inside output that's otherwise accurate.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="20.0" x2="36.0" y2="20.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <circle cx="12.0" cy="20.0" r="2.0" fill="var(--c2)"/>
@@ -404,7 +419,7 @@
       <g transform="translate(20,20)"><path d="M0.0,-12.0 L-3.0,-9.0 M0.0,-12.0 L3.0,-9.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Interception</div>
-    </div></div><div class="hub-label">Assembly</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><div class="hub-label">Assembly</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Setting up a reusable, saved set of instructions (&quot;a Skill&quot;) that handles one of your recurring tasks automatically.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="10.0" y="6.0" width="20.0" height="28.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <line x1="15.0" y1="12.0" x2="25.0" y2="12.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -413,21 +428,21 @@
       <g transform="translate(20,20)"><path d="M16.0,8.0 L16.0,2.0 L10.0,2.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Configuration</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Spotting which of your recurring tasks are repetitive enough to be worth saving as a reusable AI &quot;Skill.&quot;">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-12.0,-8.0 A12.0,12.0 0 1 1 -12.0,8.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M-16.0,-12.0 L-12.0,-8.0 L-8.0,-12.0" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="32.0" cy="20.0" r="4.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Candidacy</div>
-    </div></div><div class="hub-label">Capstone</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div></div><div class="hub-label">Capstone</div><div class="hub-row"><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Writing down your access decision before you ever open the tool - a decision, not an afterthought.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-12.0,-12.0 C-16.0,-12.0 -16.0,-4.0 -12.0,-4.0 L12.0,-4.0 C16.0,-4.0 16.0,-12.0 12.0,-12.0 Z" fill="none" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <rect x="8.0" y="16.0" width="24.0" height="16.0" rx="0.0" fill="none" stroke="var(--c2)" stroke-width="1.6"/>
       <circle cx="20.0" cy="24.0" r="3.2" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Declaration</div>
-    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);">
+    </div><div class="card" style="background:var(--c2-fill); border-color:var(--c2);" tabindex="0" data-desc="Combining scoped reading, multi-source synthesis, and write-action review into one complete connected workflow.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="6.0" cy="20.0" r="3.2" fill="none" stroke="var(--c2)" stroke-width="1.6" opacity="1"/>
       <circle cx="20.0" cy="20.0" r="3.2" fill="none" stroke="var(--c2)" stroke-width="1.6" opacity="1"/>
@@ -436,14 +451,14 @@
       <line x1="23.2" y1="20.0" x2="30.8" y2="20.0" stroke="var(--c2)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Workflow</div>
-    </div></div><h2 class="class-heading" style="color:var(--c3)">Class Three</h2><div class="hub-label">Autonomy</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><h2 class="class-heading" style="color:var(--c3)">Class Three</h2><div class="hub-label">Autonomy</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Explaining what makes an AI agent fundamentally different from the single-prompt, single-review tools used in Classes One and Two.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="26.0" x2="16.0" y2="26.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="16.0" y1="20.0" x2="16.0" y2="32.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="20.0" y1="26.0" x2="36.0" y2="26.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="3 2"/>
       </svg>
       <div class="name">Shift</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Deciding whether a real task is actually well-suited to hand off to an agent to run on its own.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="6.0" y1="20.0" x2="34.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="20.0" y1="20.0" x2="20.0" y2="10.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -452,13 +467,13 @@
       <rect x="17.0" y="4.0" width="6.0" height="6.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6"/>
       </svg>
       <div class="name">Viability</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Identifying a task that should never be handed off to an agent - and being able to say why.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <rect x="12.0" y="12.0" width="16.0" height="16.0" rx="0.0" fill="none" stroke="var(--c3)" stroke-width="1.6"/>
       <line x1="6.0" y1="20.0" x2="34.0" y2="20.0" stroke="var(--line-bright)" stroke-width="2.4" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Redline</div>
-    </div></div><div class="hub-label">Brief</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><div class="hub-label">Brief</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Writing a complete brief for an AI agent: the outcome you want, the constraints it must respect, the conditions that should stop it, and checkpoints where you'll review its work.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="4.0" x2="4.0" y2="36.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="36.0" y1="4.0" x2="36.0" y2="36.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -467,7 +482,7 @@
       <line x1="8.0" y1="28.0" x2="32.0" y2="28.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Specification</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Telling a checkpoint (a planned pause for your review) apart from a stop condition (a rule that halts the agent automatically).">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="20.0" x2="36.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <circle cx="12.0" cy="20.0" r="2.8" fill="var(--c3)"/>
@@ -475,7 +490,7 @@
       <circle cx="28.0" cy="20.0" r="6.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Checkpoint</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Checking whether a brief is specific enough that someone else could predict exactly how the agent will behave.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="12.0" x2="18.0" y2="12.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="4.0" y1="20.0" x2="18.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -485,7 +500,7 @@
       <line x1="24.0" y1="28.0" x2="32.0" y2="28.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="0.35"/>
       </svg>
       <div class="name">Clarity</div>
-    </div></div><div class="hub-label">Transcript</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><div class="hub-label">Transcript</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Breaking a long agent run into separate steps you can evaluate one at a time.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="20.0" x2="36.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="12.0" y1="14.0" x2="12.0" y2="26.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -493,28 +508,28 @@
       <line x1="28.0" y1="14.0" x2="28.0" y2="26.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Parsing</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Judging whether a given step followed the brief, or whether the agent substituted its own judgment instead.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="14.0" x2="36.0" y2="14.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/>
       <g transform="translate(20,20)"><path d="M-12.0,6.0 L-4.0,6.0 L4.0,6.0 L12.0,-2.0" fill="none" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="32.0" cy="18.0" r="2.6" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Adherence</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Deciding whether to let an agent's run continue at a scheduled mid-point checkpoint.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="20.0" x2="36.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="20.0" y1="8.0" x2="20.0" y2="32.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <g transform="translate(20,20)"><path d="M-4.0,0.0 L0.0,5.0 L8.0,-5.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Approval</div>
-    </div></div><div class="hub-label">Drift</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><div class="hub-label">Drift</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Telling ongoing &quot;drift&quot; - the agent gradually veering off course - apart from one isolated wrong output.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="32.0" x2="20.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="0.6" stroke-dasharray="2 2"/>
       <g transform="translate(20,20)"><path d="M-16.0,12.0 L0.0,-2.0 L16.0,12.0" fill="none" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <circle cx="20.0" cy="18.0" r="3.2" fill="var(--line-bright)"/>
       </svg>
       <div class="name">Divergence</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Locating the exact step where a drifting run first went off track.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="20.0" x2="36.0" y2="20.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <circle cx="12.0" cy="20.0" r="2.0" fill="var(--c3)"/>
@@ -524,21 +539,21 @@
       <line x1="16.0" y1="10.0" x2="24.0" y2="10.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       </svg>
       <div class="name">Pinpoint</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Proposing where a checkpoint should have been placed to catch the drift before it went this far.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-16.0,8.0 L0.0,-4.0 L16.0,8.0" fill="none" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <line x1="16.0" y1="22.0" x2="16.0" y2="12.0" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/>
       <circle cx="16.0" cy="12.0" r="2.6" fill="none" stroke="var(--line-bright)" stroke-width="1.6" opacity="1"/>
       </svg>
       <div class="name">Placement</div>
-    </div></div><div class="hub-label">Escalation</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><div class="hub-label">Escalation</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Identifying a stop condition that was defined but should have fired - and didn't.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="4.0" y1="26.0" x2="36.0" y2="26.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <g transform="translate(20,20)"><path d="M0.0,6.0 L0.0,-8.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/></g>
       <circle cx="20.0" cy="26.0" r="2.6" fill="var(--c3)"/>
       </svg>
       <div class="name">Trigger</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Deciding, and justifying, whether a drifting run should be stopped and escalated or corrected and allowed to continue.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <line x1="20.0" y1="6.0" x2="20.0" y2="18.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
       <line x1="20.0" y1="18.0" x2="8.0" y2="30.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/>
@@ -548,34 +563,34 @@
       <g transform="translate(20,20)"><path d="M16.0,10.0 L12.0,7.0 M16.0,10.0 L12.0,13.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Verdict</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Recognizing a run the agent correctly stopped itself as a success story, not a failure.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M-10.0,-10.0 L10.0,-10.0 L10.0,10.0 L-10.0,10.0 Z" fill="none" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M-5.0,0.0 L-1.0,5.0 L6.0,-5.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Validation</div>
-    </div></div><div class="hub-label">Containment</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><div class="hub-label">Containment</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Understanding exactly what an AI agent can see, reach, and act on once it's running without you watching.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="20.0" r="2.6" fill="var(--line-bright)"/>
       <circle cx="20.0" cy="20.0" r="8.0" fill="none" stroke="var(--c3)" stroke-width="1.6" opacity="1" stroke-dasharray="2 2"/>
       <circle cx="20.0" cy="20.0" r="14.0" fill="none" stroke="var(--c3)" stroke-width="1.6" opacity="0.5" stroke-dasharray="2 2"/>
       </svg>
       <div class="name">Footprint</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Recognizing the warning signs that an agent has gone beyond the access it was actually granted.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <g transform="translate(20,20)"><path d="M0.0,-16.0 L14.0,-9.0 V9.0 C14.0,15.0 6.0,18.0 0.0,20.0 C-6.0,18.0 -14.0,15.0 -14.0,9.0 V-9.0 Z" fill="none" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="3 3"/></g>
       <g transform="translate(20,20)"><path d="M8.0,-2.0 L14.0,-2.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       <g transform="translate(20,20)"><path d="M8.0,-8.0 L14.0,6.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6" stroke-linecap="round" opacity="1"/></g>
       </svg>
       <div class="name">Breach</div>
-    </div></div><div class="hub-label">Capstone</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div></div><div class="hub-label">Capstone</div><div class="hub-row"><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="Writing a complete brief from nothing but a bare task description - no template to fill in.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20.0" cy="32.0" r="2.4" fill="var(--line-bright)"/>
       <line x1="20.0" y1="32.0" x2="20.0" y2="8.0" stroke="var(--c3)" stroke-width="1.6" stroke-linecap="round" opacity="1" stroke-dasharray="2 2"/>
       <rect x="8.0" y="4.0" width="24.0" height="8.0" rx="0.0" fill="none" stroke="var(--line-bright)" stroke-width="1.6"/>
       </svg>
       <div class="name">Cold Start</div>
-    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);">
+    </div><div class="card" style="background:var(--c3-fill); border-color:var(--c3);" tabindex="0" data-desc="The series' capstone skill: combining automation, verification, and access-governance into one complete, self-directed practice.">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="8.0" cy="12.0" r="2.8" fill="none" stroke="var(--c3)" stroke-width="1.6" opacity="1"/>
       <circle cx="32.0" cy="12.0" r="2.8" fill="none" stroke="var(--c3)" stroke-width="1.6" opacity="1"/>
