@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crafts and the 4Ds</title>
+<!-- Craft names and descriptions are copied from the desc fields in craft-trees/index.html (2026-10-30).
+     If a description changes there, re-copy it here. The 4D mapping is a proposal, not part of the tree. -->
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0a0b10; --panel: #14161f; --panel-2: #1a1d28; --border: #2a2a30;
+    --line-bright: #d4af6a; --text: #e8e6df; --text-dim: #8f8c7f;
+    --c1: #2dd4bf; --c2: #60a5fa; --c3: #a78bfa;
+    --delegation: #fbbf24; --description: #f472b6; --discernment: #4ade80; --diligence: #f87171;
+    --loop: #d4af6a; --capstone: #e8e6df;
+    --strong: #4ade80; --good: #2dd4bf; --partial: #fbbf24; --gap: #f87171;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #16151f 0%, #0a0b10 60%) fixed, var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 24px; padding-block: 24px 140px; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 8px; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
+  h2 { font-size: 17px; font-weight: 500; margin: 36px 0 6px; }
+  h3 { font-size: 14px; font-weight: 600; margin: 0; }
+  .sub { color: var(--text-dim); margin: 0; max-width: 820px; }
+  .status { color: var(--text-dim); font-size: 12px; font-style: italic; margin: 8px 0 0; }
+  .lede { color: var(--text-dim); margin: 0 0 14px; max-width: 820px; }
+  q { color: var(--text); font-style: italic; }
+  q::before, q::after { color: var(--text-dim); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 20px; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .stat .num { font-size: 26px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .stat .lbl { color: var(--text-dim); font-size: 12px; }
+  .stat.gap .num { color: var(--gap); }
+
+  /* Modes */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .mode { background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--bk); border-radius: 10px; padding: 14px 16px; }
+  .mode .book { color: var(--bk); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .mode h3 { font-size: 16px; font-weight: 500; margin: 2px 0 6px; }
+  .mode p { margin: 0 0 6px; color: var(--text-dim); }
+  .mode p.def { color: var(--text); }
+
+  /* Controls */
+  .controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 10px 0 16px; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg button { background: transparent; color: var(--text-dim); border: 0; padding: 7px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--border); }
+  .seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--text); }
+  .seg button:focus-visible, .chip:focus-visible { outline: 2px solid var(--line-bright); outline-offset: 2px; }
+  .ctl-label { color: var(--text-dim); font-size: 12px; margin-right: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--text-dim); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: -1px; }
+
+  /* 4D grid */
+  .dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 14px; }
+  .dcol { background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--dc); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .dcol > header { border: 0; padding: 0; margin: 0; }
+  .dcol .dname { color: var(--dc); font-size: 17px; font-weight: 500; margin: 0; }
+  .dcol .ddef { color: var(--text-dim); font-size: 12.5px; margin: 2px 0 0; }
+  .sk { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .sk.isgap { border-color: color-mix(in srgb, var(--gap) 55%, var(--border)); }
+  .sk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .sk .def { font-size: 12.5px; margin: 4px 0 6px; }
+  .sk .note { font-size: 12px; color: var(--text-dim); margin: 6px 0 0; }
+  .fit { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 1px 8px; border: 1px solid currentColor; white-space: nowrap; }
+  .fit.Strong { color: var(--strong); } .fit.Good { color: var(--good); } .fit.Partial { color: var(--partial); } .fit.Gap { color: var(--gap); }
+  .bar { display: flex; gap: 3px; margin: 6px 0 2px; height: 5px; }
+  .bar span { border-radius: 3px; }
+  .barlbl { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .chip { font: inherit; font-size: 12px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--cc); border-radius: 6px; padding: 2px 8px; cursor: pointer; transition: opacity .15s, border-color .15s; }
+  .chip:hover { border-color: var(--cc); }
+  .chip.dim { opacity: .22; }
+  .chip.sel { border-color: var(--line-bright); box-shadow: 0 0 0 1px var(--line-bright); }
+  .chip .tag { color: var(--text-dim); font-size: 10.5px; margin-left: 4px; }
+  .empty { font-size: 12px; color: var(--gap); font-style: italic; }
+
+  .loopcard { margin-top: 14px; background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--loop); border-radius: 10px; padding: 14px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+  .step { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .step b { color: var(--loop); font-weight: 600; }
+  .step p { margin: 4px 0 0; font-size: 12.5px; color: var(--text-dim); }
+
+  /* By book */
+  .bgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .bcol { background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--bk); border-radius: 10px; padding: 14px; }
+  .bcol h3 { color: var(--bk); font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .fam { margin-top: 10px; }
+  .fam .famname { font-size: 12px; font-weight: 600; color: var(--fc); }
+  .fam .famname span { color: var(--text-dim); font-weight: 400; }
+  .bcol .chip { border-left-color: var(--fc); }
+  .mix { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 2px 0 4px; }
+
+  /* Contrast table */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  thead th { background: var(--panel-2); font-weight: 500; color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  tbody th { font-weight: 500; width: 16%; color: var(--text-dim); }
+  tbody tr:last-child > * { border-bottom: 0; }
+  td { background: var(--panel); }
+
+  .cards2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card p { margin: 6px 0 0; color: var(--text-dim); font-size: 13px; }
+  ol.raise { margin: 0; padding-left: 20px; max-width: 900px; }
+  ol.raise li { margin-bottom: 10px; color: var(--text-dim); }
+  ol.raise li b { color: var(--text); font-weight: 500; }
+  .sources { font-size: 12px; color: var(--text-dim); }
+  .sources a { color: var(--line-bright); }
+
+  /* Detail panel */
+  .detail { position: fixed; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 1px solid var(--line-bright); padding: 12px 24px calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
+  .detail-in { max-width: 1180px; margin: 0 auto; display: flex; gap: 16px; align-items: flex-start; }
+  .detail .name { font-size: 15px; font-weight: 500; margin: 0; }
+  .detail .meta { font-size: 12px; color: var(--text-dim); margin: 2px 0 4px; }
+  .detail .body { font-size: 13px; color: var(--text-dim); margin: 0; max-width: 760px; }
+  .detail .placeholder { font-size: 13px; color: var(--text-dim); font-style: italic; margin: 0; }
+  .detail button { margin-left: auto; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 6px; padding: 3px 9px; cursor: pointer; font: inherit; font-size: 12px; }
+
+  @media (max-width: 520px) {
+    .wrap { padding-inline: 16px; }
+    .detail { padding-inline: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Crafts and the 4Ds</h1>
+  <p class="sub">Our 63 crafts compared with the AI Fluency Framework that Anthropic teaches in Claude Academy: four competencies (Delegation, Description, Discernment, Diligence), each with three sub-skills, plus the Description–Discernment loop and three modes of working with AI.</p>
+  <p class="status">Planning view for Greg and John, 2026-10-30. The definitions are quoted from Claude Academy. Which crafts sit under which sub-skill is our proposal, and nothing here changes the craft tree. Click any craft for its description.</p>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<h2>Three modes, three books</h2>
+<p class="lede">The framework names three ways of working with AI. They line up roughly with our three books. The match isn't one to one, but it's a useful way to tell John and learners where the course is heading.</p>
+<div class="modes">
+  <div class="mode" style="--bk:var(--c1)">
+    <div class="book">Book 1: AI Fluency</div>
+    <h3>Augmentation</h3>
+    <p class="def"><q>You and AI collaborate as creative thinking and task execution partners.</q></p>
+    <p>Chat, prompting, the profile and checking the output. The S5 Skill build is a first step toward automation, and the read-only inbox in S4 is still augmentation, because the learner sends nothing.</p>
+  </div>
+  <div class="mode" style="--bk:var(--c2)">
+    <div class="book">Book 2: AI Workflows</div>
+    <h3>Automation</h3>
+    <p class="def"><q>AI executes specific tasks based on your instructions.</q></p>
+    <p>Connectors, MCP, Skills and Zapier. The tool starts writing and sending, so reviewing an action before it happens (Sign-off) becomes the core check.</p>
+  </div>
+  <div class="mode" style="--bk:var(--c3)">
+    <div class="book">Book 3: AI Orchestration</div>
+    <h3>Agency</h3>
+    <p class="def"><q>You guide AI to work independently on your behalf, shaping its knowledge and behavior rather than specific actions.</q></p>
+    <p>Briefs, checkpoints, drift and stop conditions. Anthropic's separate human-agent teams course (beta) belongs here, and we can compare it once Book 3 has sessions.</p>
+  </div>
+</div>
+
+<h2>The crosswalk</h2>
+<p class="lede">Each sub-skill shows Anthropic's definition, how well our crafts cover it, how that coverage spreads across the books, and the crafts themselves. A craft can sit under more than one sub-skill.</p>
+
+<div class="controls">
+  <div><span class="ctl-label">View</span><span class="seg" id="viewSeg">
+    <button type="button" data-view="d" aria-pressed="true">By 4D</button>
+    <button type="button" data-view="b" aria-pressed="false">By book</button>
+  </span></div>
+  <div><span class="ctl-label">Highlight</span><span class="seg" id="bookSeg">
+    <button type="button" data-book="0" aria-pressed="true">All books</button>
+    <button type="button" data-book="1" aria-pressed="false">Book 1</button>
+    <button type="button" data-book="2" aria-pressed="false">Book 2</button>
+    <button type="button" data-book="3" aria-pressed="false">Book 3</button>
+  </span></div>
+  <div class="legend" id="legend"></div>
+</div>
+
+<section id="viewD">
+  <div class="dgrid" id="dgrid"></div>
+  <div class="loopcard">
+    <h3 style="color:var(--loop);font-size:16px;font-weight:500">The Description–Discernment loop</h3>
+    <p class="lede" style="margin:4px 0 0"><q>Discernment works hand-in-hand with Description in a continuous feedback loop.</q> The course runs the loop in four stages. Our crafts cover all four, and the last stage is what our capstones assess.</p>
+    <div class="steps" id="steps"></div>
+  </div>
+</section>
+
+<section id="viewB" hidden>
+  <p class="lede">Each craft placed under its closest 4D family. The bar shows each book's mix. Book 1 leans on Description and Discernment, Book 2 adds Diligence through access and write actions, and Book 3 brings Delegation back for agent hand-offs.</p>
+  <div class="bgrid" id="bgrid"></div>
+</section>
+
+<h2>Where they differ</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th>Anthropic's 4Ds</th><th>Our craft tree</th></tr></thead>
+  <tbody>
+    <tr><th>What it is</th><td>A framework: 4 competencies with 12 sub-skills</td><td>A progression: 63 crafts across three books</td></tr>
+    <tr><th>The unit</th><td>A competency, a way of thinking: <q>evaluating what AI gives back before acting on it</q></td><td>A craft, one task you can watch someone do: <q>Tracing one specific number in an AI output back to where it came from</q></td></tr>
+    <tr><th>Order</th><td>No sequence. An inner loop (Description and Discernment) for daily work, and an outer loop (Delegation and Diligence) for bigger decisions</td><td>Prerequisites inside each book, and bridge crafts that carry into the next one</td></tr>
+    <tr><th>Tools</th><td>Tool-agnostic</td><td>Tied to the tools used in class: Claude, Gemini Notebook, connectors, Zapier, agents</td></tr>
+    <tr><th>Evidence</th><td>A course quiz and a certificate</td><td>Every craft has a home exercise, and each book ends in a capstone that checks readiness</td></tr>
+    <tr><th>Balance</th><td>Even across the four</td><td id="balanceCell"></td></tr>
+    <tr><th>Responsibility</th><td>Ethics and openness: choosing systems carefully, disclosing AI's role, vouching for what you share</td><td>Security and access: what you hand over, what the tool can reach, and reviewing every action before it happens</td></tr>
+    <tr><th>Agents</th><td>The Agency mode, plus a separate short course on human-agent teams (beta)</td><td>A whole book: briefs, checkpoints, drift, stop conditions</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Where we go deeper</h2>
+<p class="lede">Four areas where the tree names skills the framework covers in a line or not at all. These are the course's selling points next to a free Academy course.</p>
+<div class="cards2">
+  <div class="card"><h3>The AI knows you</h3><p>Profile, Context, Memory, Blind Spot, Revision, Continuity. Performance Description covers how the AI should behave, such as <q>concise or detailed</q>. It doesn't cover a profile you carry between tools, or checking what the tool remembers.</p></div>
+  <div class="card"><h3>Grounded vs. general answers</h3><p>Grounding, Comparison, Currency, Provenance. Platform Awareness is <q>knowing what different AI systems can do</q>. We teach how to check an answer differently depending on where it came from.</p></div>
+  <div class="card"><h3>Access and write actions</h3><p>Vetting, Ownership, Declaration, Sign-off, Targeting, Threshold, Breach. In the framework, Creation and Deployment Diligence are one sentence each. In the course they're most of Book 2.</p></div>
+  <div class="card"><h3>Agent drift</h3><p>Divergence, Pinpoint, Placement, Trigger, Verdict, Validation. Process Discernment judges how the AI approached one task. Book 3 judges a long run, step by step, and decides when to stop it.</p></div>
+</div>
+
+<h2>What to raise</h2>
+<p class="lede">Each item is checked against the pushback list's principle: where does it land for good, and what comes out to make room?</p>
+<ol class="raise">
+  <li><b>Transparency is the one real gap.</b> <q>Being honest about AI's role in our work with everyone who needs to know.</q> No craft covers it. The smallest fix adds no session time: a question in the capstone's safety line ("Who needs to know AI helped, and did you tell them?"), plus a disclosure angle for John's "(maybe)" watermarking reading. A new craft would be a tree change and needs Greg's approval.</li>
+  <li><b>One of our S2 prompting rules could read against Process Description.</b> S2 says "describe the finished result, and skip spelling out every step". Anthropic says how the AI approaches a request <q>can be as important as specifying the end goal</q>. The two fit together, because our "ask it to ask you" rule is process description, but the S2 wording could use one clarifying line. Check it when Session 2 becomes the layout model (queue item 2).</li>
+  <li><b>Platform Awareness is better covered than the first pass said.</b> Model Sense and Grounding are Book 1 exercises, and the S3 Claude vs. Gemini Notebook exercise is the place to assess it. The first pass also put Model Sense under Problem Awareness, which Anthropic defines as <q>understanding your goals and the work involved</q>, so this page moves it.</li>
+  <li><b>Task Delegation is thin in Book 1.</b> Calibration is only Supporting there, and the capstone's "human part" is the main place learners say what stays with them. That's by design, because Candidacy, Viability and Redline come later. It's worth knowing if John compares the course to the Academy's.</li>
+  <li><b>"Context limits" still isn't named anywhere.</b> The Academy's capabilities course covers context limits. Learners hit them in the S3 research and S4 inbox sessions. One line in Model Sense or the S3 summary is enough.</li>
+  <li><b>Names and licensing.</b> "AI Fluency" is Anthropic's framework name and also the name of our course, our Book 1 and our Book 1 capstone craft. Pointing to the framework could help with positioning, but it shouldn't suggest an endorsement. Third-party summaries say the framework is licensed CC BY-NC-SA 4.0 (non-commercial). Confirm the terms before any framework text appears in the paid course's lessons. Quoting it here, for planning, is fine.</li>
+</ol>
+
+<h2>Sources</h2>
+<p class="sources">
+  Definitions quoted from Claude Academy, <i>AI Fluency: Framework and foundations</i> (checked 2026-10-30):
+  <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/the-4d-framework">The 4D framework</a> ·
+  <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/a-closer-look-at-delegation">Delegation</a> ·
+  <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/a-closer-look-at-description">Description</a> ·
+  <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/a-closer-look-at-discernment">Discernment</a> ·
+  <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/the-description-discernment-loop">The Description–Discernment loop</a> ·
+  <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/a-closer-look-at-diligence">Diligence</a> ·
+  <a href="https://academy.claude.com/">Catalog</a>.
+  The framework is by Rick Dakan and Joseph Feller, with Anthropic. Crafts and edges come from <code>craft-trees/index.html</code>. The written notes are in <code>planning/claude-academy-crosswalk.md</code>.
+</p>
+
+</div>
+
+<div class="detail" id="detail" aria-live="polite">
+  <div class="detail-in" id="detailIn"><p class="placeholder">Click a craft to see its description and every sub-skill it sits under.</p></div>
+</div>
+
+<script>
+const CRAFTS = [{"id": "modelsense", "name": "Model Sense", "book": 1, "desc": "Building an accurate picture of how an LLM actually generates an answer, so you're not relying on guesswork or hype."}, {"id": "precision", "name": "Precision", "book": 1, "desc": "Writing a prompt that spells out the outcome you want, the context the model needs, and the format the answer should take - instead of a vague ask."}, {"id": "profile", "name": "Profile", "book": 1, "desc": "Drafting a first version of your \"AI profile\" - a short written description of your work and preferences that you can hand to any AI tool so it has context about you."}, {"id": "grounding", "name": "Grounding", "book": 1, "desc": "Telling the difference between a tool answering from a specific set of documents you gave it, versus one answering from its own general training."}, {"id": "iteration", "name": "Iteration", "book": 1, "desc": "Rewriting a prompt to fix what was missing or wrong in the model's first attempt, instead of starting over from scratch."}, {"id": "blueprinting", "name": "Blueprinting", "book": 1, "desc": "Outlining a document's sections and structure before asking the model to write it."}, {"id": "plainspeech", "name": "Plain Speech", "book": 1, "desc": "Turning a table or spreadsheet of data into a summary a non-technical reader could actually follow."}, {"id": "drafting", "name": "Drafting", "book": 1, "desc": "Getting a usable first draft out of a one-line instruction about what you want the output to accomplish."}, {"id": "composition", "name": "Composition", "book": 1, "desc": "Writing a full document that actually follows the structure you laid out in Blueprinting."}, {"id": "triage", "name": "Triage", "book": 1, "desc": "Deciding which numbers in an AI-written document are important enough to verify, instead of checking everything (too slow) or nothing (too risky)."}, {"id": "digest", "name": "Digest", "book": 1, "desc": "Condensing a long email or chat thread into a short summary of what was actually decided."}, {"id": "accuracy", "name": "Accuracy", "book": 1, "desc": "Comparing an AI-written document against its source material to catch anything it added, dropped, or changed."}, {"id": "audit", "name": "Audit", "book": 1, "desc": "Tracing one specific number in an AI output back to where it came from, to confirm it's correct."}, {"id": "proofing", "name": "Proofing", "book": 1, "desc": "Giving a piece of writing one last check for factual errors or a wrong tone before it goes out."}, {"id": "calibration", "name": "Calibration", "book": 1, "desc": "Learning to trust an AI tool exactly as much as its track record has earned - not automatically, and not never."}, {"id": "diagnosis", "name": "Diagnosis", "book": 1, "desc": "Telling a \"hallucination\" (an AI making something up) apart from an ordinary mistake a person could just as easily make."}, {"id": "review", "name": "Review", "book": 1, "desc": "Doing a deliberate second read of AI output aimed specifically at catching errors - the checking habits from Triage, Digest, and Composition, now combined into one routine."}, {"id": "detection", "name": "Detection", "book": 1, "desc": "Spotting an error that's been deliberately hidden inside confident, well-written AI text."}, {"id": "context", "name": "Context", "book": 1, "desc": "Feeding your AI profile into a brand-new conversation so the tool has context about you right from the start."}, {"id": "memory", "name": "Memory", "book": 1, "desc": "Knowing what your AI tool remembers about you between conversations - checking it, correcting it, and deciding what it should forget."}, {"id": "comparison", "name": "Comparison", "book": 1, "desc": "Comparing how you'd verify an answer from a grounded tool (working off your documents) versus a general chat tool (working from memory alone)."}, {"id": "blindspot", "name": "Blind Spot", "book": 1, "desc": "Identifying something about your own work that felt too obvious to mention - and is therefore missing from your AI profile."}, {"id": "revision", "name": "Revision", "book": 1, "desc": "Rewriting your AI profile with real changes, based on what actually didn't work the first time you used it."}, {"id": "fluency", "name": "Fluency", "book": 1, "desc": "Combining every skill from the course into one self-directed workflow, applied to material you've never seen before."}, {"id": "recognition", "name": "Recognition", "book": 2, "desc": "Telling a tool that's actively connected to a live source apart from one you've simply pasted text into."}, {"id": "candidacy", "name": "Candidacy", "book": 2, "desc": "Spotting which of your recurring tasks are repetitive enough to be worth saving as a reusable AI \"Skill.\""}, {"id": "continuity", "name": "Continuity", "book": 2, "desc": "Bringing your AI profile from Class One into a tool that's now connected to live sources, not just a chat window."}, {"id": "vetting", "name": "Vetting", "book": 2, "desc": "Deciding which data sources are safe and appropriate to connect an AI tool to - and which ones aren't."}, {"id": "configuration", "name": "Configuration", "book": 2, "desc": "Setting up a reusable, saved set of instructions (\"a Skill\") that handles one of your recurring tasks automatically."}, {"id": "currency", "name": "Currency", "book": 2, "desc": "Recognizing when a connected source has more up-to-date information than the model's own training data."}, {"id": "ownership", "name": "Ownership", "book": 2, "desc": "Deciding for yourself how much access a connected tool should have, instead of just accepting its default settings."}, {"id": "retrieval", "name": "Retrieval", "book": 2, "desc": "Pulling exactly the information you need from a connected source, without letting the tool grab more than necessary."}, {"id": "boundaries", "name": "Boundaries", "book": 2, "desc": "Limiting a request to one specific section of a source, instead of handing over an entire document."}, {"id": "synthesis", "name": "Synthesis", "book": 2, "desc": "Combining information pulled from more than one connected source into a single answer."}, {"id": "adjustment", "name": "Adjustment", "book": 2, "desc": "Proposing a narrower or different level of access once you've spotted a problem with the current setup."}, {"id": "discrepancy", "name": "Discrepancy", "book": 2, "desc": "Catching a factual conflict between two sources, instead of letting the tool silently pick one and move on."}, {"id": "provenance", "name": "Provenance", "book": 2, "desc": "Tracing any claim in an AI output back to the exact source it came from."}, {"id": "signoff", "name": "Sign-off", "book": 2, "desc": "Running a fixed three-question check before approving any action where the AI tool actually sends, writes, or changes something (not just answers a question)."}, {"id": "targeting", "name": "Targeting", "book": 2, "desc": "Catching a wrong recipient or wrong target before an AI-initiated action actually goes out."}, {"id": "threshold", "name": "Threshold", "book": 2, "desc": "Understanding why reviewing an action that changes something is higher-stakes than reviewing a plain chat answer."}, {"id": "overreach", "name": "Overreach", "book": 2, "desc": "Recognizing \"scope creep\" - the AI doing more than it was asked - as its own kind of error, distinct from making something up."}, {"id": "interception", "name": "Interception", "book": 2, "desc": "Catching one planted, out-of-scope detail hidden inside output that's otherwise accurate."}, {"id": "declaration", "name": "Declaration", "book": 2, "desc": "Writing down your access decision before you ever open the tool - a decision, not an afterthought."}, {"id": "workflow", "name": "Workflow", "book": 2, "desc": "Combining scoped reading, multi-source synthesis, and write-action review into one complete connected workflow."}, {"id": "specification", "name": "Specification", "book": 3, "desc": "Writing a complete brief for an AI agent: the outcome you want, the constraints it must respect, the conditions that should stop it, and checkpoints where you'll review its work."}, {"id": "shift", "name": "Shift", "book": 3, "desc": "Explaining what makes an AI agent fundamentally different from the single-prompt, single-review tools used in Classes One and Two."}, {"id": "footprint", "name": "Footprint", "book": 3, "desc": "Understanding exactly what an AI agent can see, reach, and act on once it's running without you watching."}, {"id": "checkpoint", "name": "Checkpoint", "book": 3, "desc": "Telling a checkpoint (a planned pause for your review) apart from a stop condition (a rule that halts the agent automatically)."}, {"id": "viability", "name": "Viability", "book": 3, "desc": "Deciding whether a real task is actually well-suited to hand off to an agent to run on its own."}, {"id": "clarity", "name": "Clarity", "book": 3, "desc": "Checking whether a brief is specific enough that someone else could predict exactly how the agent will behave."}, {"id": "redline", "name": "Redline", "book": 3, "desc": "Identifying a task that should never be handed off to an agent - and being able to say why."}, {"id": "parsing", "name": "Parsing", "book": 3, "desc": "Breaking a long agent run into separate steps you can evaluate one at a time."}, {"id": "adherence", "name": "Adherence", "book": 3, "desc": "Judging whether a given step followed the brief, or whether the agent substituted its own judgment instead."}, {"id": "approval", "name": "Approval", "book": 3, "desc": "Deciding whether to let an agent's run continue at a scheduled mid-point checkpoint."}, {"id": "divergence", "name": "Divergence", "book": 3, "desc": "Telling ongoing \"drift\" - the agent gradually veering off course - apart from one isolated wrong output."}, {"id": "pinpoint", "name": "Pinpoint", "book": 3, "desc": "Locating the exact step where a drifting run first went off track."}, {"id": "placement", "name": "Placement", "book": 3, "desc": "Proposing where a checkpoint should have been placed to catch the drift before it went this far."}, {"id": "trigger", "name": "Trigger", "book": 3, "desc": "Identifying a stop condition that was defined but should have fired - and didn't."}, {"id": "verdict", "name": "Verdict", "book": 3, "desc": "Deciding, and justifying, whether a drifting run should be stopped and escalated or corrected and allowed to continue."}, {"id": "validation", "name": "Validation", "book": 3, "desc": "Recognizing a run the agent correctly stopped itself as a success story, not a failure."}, {"id": "coldstart", "name": "Cold Start", "book": 3, "desc": "Writing a complete brief from nothing but a bare task description - no template to fill in."}, {"id": "breach", "name": "Breach", "book": 3, "desc": "Recognizing the warning signs that an agent has gone beyond the access it was actually granted."}, {"id": "orchestration", "name": "Orchestration", "book": 3, "desc": "The series' capstone skill: combining automation, verification, and access-governance into one complete, self-directed practice."}];
+
+// Primary 4D family for each craft (used by the "By book" view). Proposal, 2026-10-30.
+const FAMILY = {
+  modelsense:"delegation", grounding:"delegation", recognition:"delegation", candidacy:"delegation", currency:"delegation",
+  shift:"delegation", viability:"delegation", redline:"delegation", approval:"delegation",
+  precision:"description", profile:"description", blueprinting:"description", plainspeech:"description", drafting:"description",
+  composition:"description", digest:"description", context:"description", blindspot:"description", revision:"description",
+  continuity:"description", configuration:"description", retrieval:"description", boundaries:"description", synthesis:"description",
+  specification:"description", checkpoint:"description", clarity:"description", placement:"description", coldstart:"description",
+  triage:"discernment", accuracy:"discernment", audit:"discernment", calibration:"discernment", diagnosis:"discernment",
+  review:"discernment", detection:"discernment", memory:"discernment", comparison:"discernment", discrepancy:"discernment",
+  provenance:"discernment", overreach:"discernment", interception:"discernment", parsing:"discernment", adherence:"discernment",
+  divergence:"discernment", pinpoint:"discernment", trigger:"discernment", validation:"discernment",
+  proofing:"diligence", vetting:"diligence", ownership:"diligence", adjustment:"diligence", signoff:"diligence",
+  targeting:"diligence", threshold:"diligence", declaration:"diligence", footprint:"diligence", breach:"diligence", verdict:"diligence",
+  iteration:"loop", fluency:"capstone", workflow:"capstone", orchestration:"capstone"
+};
+
+const DS = [
+  { id:"delegation", name:"Delegation", def:"Deciding what AI handles and what stays with you.", skills:[
+    { name:"Problem awareness", def:"Understanding your goals and the work involved to achieve it.", fit:"Good",
+      crafts:["blindspot","blueprinting","candidacy","viability"],
+      note:"In Book 1 it lives in the 3→4 inventory (what starts the work, what done looks like) more than in a craft." },
+    { name:"Platform awareness", def:"Knowing what different AI systems can do.", fit:"Good",
+      crafts:["modelsense","grounding","comparison","recognition","currency","shift"],
+      note:"Corrected from Partial: Model Sense and Grounding are Book 1 exercises. The tool readings support it." },
+    { name:"Task delegation", def:"Strategically dividing work between you and AI.", fit:"Partial",
+      crafts:["calibration","candidacy","viability","redline","approval"],
+      note:"Good across the course, thin in Book 1, where the capstone's \"human part\" carries it." }
+  ]},
+  { id:"description", name:"Description", def:"Communicating clearly what you need and how you want AI to approach it.", skills:[
+    { name:"Product description", def:"Clearly defining what you want the AI to create.", fit:"Strong",
+      crafts:["precision","drafting","blueprinting","composition","plainspeech","digest","synthesis"],
+      note:"Most of Session 2." },
+    { name:"Process description", def:"Guiding how the AI approaches your request.", fit:"Partial",
+      crafts:["blueprinting","retrieval","boundaries","configuration","specification","checkpoint","placement","clarity","coldstart"],
+      note:"Only Blueprinting in Book 1. It's the heart of Book 3's briefs. See What to raise, item 2." },
+    { name:"Performance description", def:"Defining how you want the AI to behave during your collaboration.", fit:"Strong",
+      crafts:["profile","context","blindspot","revision","continuity","configuration"],
+      note:"Ours goes further than the Academy's: a written profile that carries between tools." }
+  ]},
+  { id:"discernment", name:"Discernment", def:"Evaluating what AI gives back before acting on it.", skills:[
+    { name:"Product discernment", def:"Evaluating the quality of AI outputs.", fit:"Strong",
+      crafts:["triage","accuracy","audit","proofing","review","detection","discrepancy","provenance","interception"],
+      note:"The course's strongest strand." },
+    { name:"Process discernment", def:"Assessing how the AI approached the task.", fit:"Partial",
+      crafts:["diagnosis","comparison","overreach","parsing","adherence","pinpoint","trigger"],
+      note:"Diagnosis and Comparison in Book 1, and strong by Book 3, where learners judge an agent's run step by step." },
+    { name:"Performance discernment", def:"Evaluating how the AI behaved during the interaction itself.", fit:"Partial",
+      crafts:["calibration","memory","approval","divergence","validation","verdict"],
+      note:"Book 1 judges trust and memory more than the AI's working style, which is what the Academy means." }
+  ]},
+  { id:"diligence", name:"Diligence", def:"Owning the final result fully, regardless of AI's role.", skills:[
+    { name:"Creation diligence", def:"Being thoughtful about which AI systems you choose and how you work with them.", fit:"Good",
+      crafts:["vetting","ownership","adjustment","declaration","footprint","breach"],
+      note:"In Book 1 it's a theme, not a craft: every security-check box and the Before You Connect reading." },
+    { name:"Transparency diligence", def:"Being open about AI's role in your work.", fit:"Gap",
+      crafts:[],
+      note:"No craft covers it. See What to raise, item 1." },
+    { name:"Deployment diligence", def:"Taking ownership for AI-assisted outputs you share with others.", fit:"Strong",
+      crafts:["proofing","review","signoff","targeting","threshold","verdict"],
+      note:"Proofing and Review in Book 1, then every write action in Book 2." }
+  ]}
+];
+
+const LOOP = [
+  { name:"Describe", def:"State your needs with precision across product, process, and performance.", crafts:["precision","profile","blueprinting"] },
+  { name:"Discern", def:"Evaluate the output, the approach, and whether the AI's behavior serves your goal.", crafts:["review","diagnosis","calibration"] },
+  { name:"Refine", def:"Give feedback, adjust your description, and request iterations.", crafts:["iteration","revision"] },
+  { name:"Integrate", def:"Add your own expertise, decide what to keep, and take responsibility for the final output.", crafts:["fluency","workflow","orchestration"] }
+];
+
+const BOOKS = [
+  { n:1, name:"Book 1: AI Fluency", color:"var(--c1)" },
+  { n:2, name:"Book 2: AI Workflows", color:"var(--c2)" },
+  { n:3, name:"Book 3: AI Orchestration", color:"var(--c3)" }
+];
+const FAMS = [
+  { id:"delegation", name:"Delegation" }, { id:"description", name:"Description" },
+  { id:"discernment", name:"Discernment" }, { id:"diligence", name:"Diligence" },
+  { id:"loop", name:"The loop" }, { id:"capstone", name:"Capstone (all four)" }
+];
+const famName = id => FAMS.find(f => f.id === id).name;
+const byId = Object.fromEntries(CRAFTS.map(c => [c.id, c]));
+const bookColor = n => BOOKS[n - 1].color;
+
+let view = "d", book = 0, selected = null;
+
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "style") e.style.cssText = v; else if (k === "class") e.className = v; else e.setAttribute(k, v);
+  }
+  for (const k of kids) e.append(k);
+  return e;
+}
+
+function chip(id, colorVar) {
+  const c = byId[id];
+  const b = el("button", { type:"button", class:"chip", "data-id":id, "data-book":c.book, style:`--cc:${colorVar}`, title:c.desc }, c.name);
+  b.addEventListener("click", () => select(id));
+  return b;
+}
+
+function memberships(id) {
+  const out = [];
+  for (const d of DS) for (const s of d.skills) if (s.crafts.includes(id)) out.push(`${d.name} · ${s.name}`);
+  for (const s of LOOP) if (s.crafts.includes(id)) out.push(`Loop · ${s.name}`);
+  return out;
+}
+
+function renderStats() {
+  const nSkills = DS.reduce((a, d) => a + d.skills.length, 0);
+  const counts = { Strong:0, Good:0, Partial:0, Gap:0 };
+  DS.forEach(d => d.skills.forEach(s => counts[s.fit]++));
+  const stats = [
+    [CRAFTS.length, "crafts in our three books"],
+    [nSkills, "4D sub-skills"],
+    [counts.Strong + counts.Good, "sub-skills covered well (Strong or Good)"],
+    [counts.Partial, "covered only in part"],
+    [counts.Gap, "gap: Transparency", "gap"]
+  ];
+  const box = document.getElementById("stats");
+  for (const [n, l, cls] of stats) box.append(el("div", { class:"stat" + (cls ? " " + cls : "") }, el("div", { class:"num" }, String(n)), el("div", { class:"lbl" }, l)));
+}
+
+function renderLegend() {
+  const lg = document.getElementById("legend");
+  lg.textContent = "";
+  if (view === "d") {
+    BOOKS.forEach(b => lg.append(el("span", {}, el("span", { class:"dot", style:`background:${b.color}` }), `Book ${b.n}`)));
+  } else {
+    FAMS.forEach(f => lg.append(el("span", {}, el("span", { class:"dot", style:`background:var(--${f.id})` }), f.name)));
+  }
+}
+
+function renderD() {
+  const grid = document.getElementById("dgrid");
+  for (const d of DS) {
+    const col = el("div", { class:"dcol", style:`--dc:var(--${d.id})` },
+      el("header", {}, el("p", { class:"dname" }, d.name), el("p", { class:"ddef" }, el("q", {}, d.def))));
+    for (const s of d.skills) {
+      const per = [1, 2, 3].map(n => s.crafts.filter(id => byId[id].book === n).length);
+      const card = el("div", { class:"sk" + (s.fit === "Gap" ? " isgap" : "") },
+        el("div", { class:"sk-head" }, el("h3", {}, s.name), el("span", { class:"fit " + s.fit }, s.fit)),
+        el("p", { class:"def" }, el("q", {}, s.def)));
+      if (s.crafts.length) {
+        const bar = el("div", { class:"bar", "aria-hidden":"true" });
+        per.forEach((n, i) => { if (n) bar.append(el("span", { style:`flex:${n};background:${bookColor(i + 1)}` })); });
+        card.append(bar, el("div", { class:"barlbl" }, `Book 1: ${per[0]} · Book 2: ${per[1]} · Book 3: ${per[2]}`));
+        const chips = el("div", { class:"chips" });
+        s.crafts.forEach(id => chips.append(chip(id, bookColor(byId[id].book))));
+        card.append(chips);
+      } else {
+        card.append(el("p", { class:"empty" }, "No craft yet."));
+      }
+      card.append(el("p", { class:"note" }, s.note));
+      col.append(card);
+    }
+    grid.append(col);
+  }
+  const steps = document.getElementById("steps");
+  for (const s of LOOP) {
+    const st = el("div", { class:"step" }, el("b", {}, s.name), el("p", {}, el("q", {}, s.def)));
+    const chips = el("div", { class:"chips" });
+    s.crafts.forEach(id => chips.append(chip(id, bookColor(byId[id].book))));
+    st.append(chips);
+    steps.append(st);
+  }
+}
+
+function renderB() {
+  const grid = document.getElementById("bgrid");
+  for (const b of BOOKS) {
+    const crafts = CRAFTS.filter(c => c.book === b.n);
+    const col = el("div", { class:"bcol", "data-book":b.n, style:`--bk:${b.color}` }, el("h3", {}, `${b.name} (${crafts.length})`));
+    const mix = el("div", { class:"mix", role:"img", "aria-label":`${b.name} family mix` });
+    for (const f of FAMS) {
+      const inFam = crafts.filter(c => FAMILY[c.id] === f.id);
+      if (!inFam.length) continue;
+      mix.append(el("span", { style:`flex:${inFam.length};background:var(--${f.id})`, title:`${f.name}: ${inFam.length}` }));
+    }
+    col.append(mix);
+    for (const f of FAMS) {
+      const inFam = crafts.filter(c => FAMILY[c.id] === f.id);
+      if (!inFam.length) continue;
+      const fam = el("div", { class:"fam", style:`--fc:var(--${f.id})` }, el("div", { class:"famname" }, f.name + " ", el("span", {}, String(inFam.length))));
+      const chips = el("div", { class:"chips" });
+      inFam.forEach(c => chips.append(chip(c.id, `var(--${f.id})`)));
+      fam.append(chips);
+      col.append(fam);
+    }
+    grid.append(col);
+  }
+  const tally = FAMS.slice(0, 4).map(f => `${f.name} ${CRAFTS.filter(c => FAMILY[c.id] === f.id).length}`).join(", ");
+  document.getElementById("balanceCell").textContent =
+    `Uneven, on purpose: ${tally}, plus Iteration for the loop and the three capstones. Discernment is where we spend the most time, because "check the output before trusting it" runs through the whole course.`;
+}
+
+function applyFilter() {
+  document.querySelectorAll(".chip").forEach(ch => {
+    ch.classList.toggle("dim", book !== 0 && Number(ch.dataset.book) !== book);
+    ch.classList.toggle("sel", ch.dataset.id === selected);
+  });
+  document.querySelectorAll(".bcol").forEach(c => { c.hidden = book !== 0 && Number(c.dataset.book) !== book; });
+}
+
+function select(id) {
+  selected = selected === id ? null : id;
+  const box = document.getElementById("detailIn");
+  box.textContent = "";
+  if (!selected) {
+    box.append(el("p", { class:"placeholder" }, "Click a craft to see its description and every sub-skill it sits under."));
+  } else {
+    const c = byId[id];
+    const where = memberships(id);
+    box.append(el("div", {},
+      el("p", { class:"name", style:`color:${bookColor(c.book)}` }, c.name),
+      el("p", { class:"meta" }, `${BOOKS[c.book - 1].name} · closest family: ${famName(FAMILY[id])}` + (where.length ? ` · listed under ${where.join("; ")}` : "")),
+      el("p", { class:"body" }, c.desc)));
+    const close = el("button", { type:"button" }, "Clear");
+    close.addEventListener("click", () => select(id));
+    box.append(close);
+  }
+  applyFilter();
+}
+
+function wireSeg(segId, attr, fn) {
+  const seg = document.getElementById(segId);
+  seg.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    fn(b.dataset[attr]);
+  });
+}
+
+renderStats(); renderD(); renderB(); renderLegend(); applyFilter();
+wireSeg("viewSeg", "view", v => {
+  view = v;
+  document.getElementById("viewD").hidden = v !== "d";
+  document.getElementById("viewB").hidden = v !== "b";
+  renderLegend();
+});
+wireSeg("bookSeg", "book", v => { book = Number(v); applyFilter(); });
+
+// Sanity check: every craft has a family, and every listed craft exists.
+const missing = CRAFTS.filter(c => !FAMILY[c.id]).map(c => c.id);
+const unknown = [...DS.flatMap(d => d.skills.flatMap(s => s.crafts)), ...LOOP.flatMap(s => s.crafts)].filter(id => !byId[id]);
+if (missing.length || unknown.length) console.warn("Crosswalk data mismatch", { missing, unknown });
+</script>
+</body>
+</html>
